@@ -6,7 +6,10 @@ This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) run
 
 ## TODO
 
+- faster incremental save
+
 - close/delete node btn
+
 
 - infer spawn node
 - infer single token (node)
