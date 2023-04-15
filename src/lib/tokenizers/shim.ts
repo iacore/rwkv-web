@@ -2,23 +2,23 @@ import type { EncodingWasm } from "./tokenizers-wasm"
 
 export class TokenizerHandle {
   nextid = 0
-  worker: Worker
+  worker: SharedWorker
   dispatch: Map<number, (ev: MessageEvent<any>) => void> = new Map()
 
-  constructor(worker: Worker) {
+  constructor(worker: SharedWorker) {
     this.worker = worker
 
     worker.addEventListener("error", console.error) // todo handle error
-    worker.addEventListener("messageerror", console.error) // todo handle error
-    worker.addEventListener("message", (ev) => {
+    worker.port.addEventListener("messageerror", console.error) // todo handle error
+    worker.port.addEventListener("message", (ev) => {
       const id = ev.data[0]
       const f = this.dispatch.get(id)
-      // console.log(ev, f)
       if (f) {
         f(ev)
         this.dispatch.delete(id)
       }
     })
+    worker.port.start()
   }
 
   encode(prompt: string, add_special_tokens: boolean): Promise<Uint32Array> {
@@ -27,7 +27,7 @@ export class TokenizerHandle {
       this.dispatch.set(id, (ev) => {
         res(ev.data[2])
       })
-      this.worker.postMessage([id, "encode", prompt, add_special_tokens])
+      this.worker.port.postMessage([id, "encode", prompt, add_special_tokens])
     })
   }
 
@@ -37,13 +37,13 @@ export class TokenizerHandle {
       this.dispatch.set(id, (ev) => {
         res(ev.data[2])
       })
-      this.worker.postMessage([id, "decode", prompt, skip_special_tokens])
+      this.worker.port.postMessage([id, "decode", prompt, skip_special_tokens])
     })
   }
 }
 
 export const load: () => Promise<TokenizerHandle> = () => {
-  const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+  const worker = new SharedWorker(new URL("./worker.ts", import.meta.url), {
     type: "module",
   })
   return new Promise((res, rej) => {

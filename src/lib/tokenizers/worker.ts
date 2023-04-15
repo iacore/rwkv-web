@@ -10,21 +10,39 @@ const tokenizer_promise: () => Promise<TokenizerWasm> = async () => {
 const tokenizer = await tokenizer_promise()
 
 self.postMessage([-1, "loaded"])
-self.addEventListener("message", (ev) => {
-  const id = ev.data[0]
-  const evtype = ev.data[1] as string
-  switch (evtype) {
-    case "encode":
-      const encoding = tokenizer.encode(ev.data[2], ev.data[3])
-      self.postMessage([id, "encode_response", encoding.input_ids])
-      break
-    case "decode":
-      const decoded = tokenizer.decode(ev.data[2], ev.data[3])
-      self.postMessage([id, "decode_response", decoded])
-      break
-    default:
-      self.reportError(new UnhandledMessage(ev))
-  }
+
+self.onconnect = (e) => {
+  const port = e.ports[0];
+
+  port.addEventListener('message', (e) => {
+    const workerResult = `Result: ${e.data[0] * e.data[1]}`;
+    port.postMessage(workerResult);
+  });
+
+  port.start(); // Required when using addEventListener. Otherwise called implicitly by onmessage setter.
+}
+
+self.addEventListener("connect", ev_connect => {
+  const port = ev_connect.ports[0] as MessagePort;
+
+  port.addEventListener("message", (ev) => {
+    const id = ev.data[0]
+    const evtype = ev.data[1] as string
+    switch (evtype) {
+      case "encode":
+        const encoding = tokenizer.encode(ev.data[2], ev.data[3])
+        self.postMessage([id, "encode_response", encoding.input_ids])
+        break
+      case "decode":
+        const decoded = tokenizer.decode(ev.data[2], ev.data[3])
+        self.postMessage([id, "decode_response", decoded])
+        break
+      default:
+        self.reportError(new UnhandledMessage(ev))
+    }
+  })
+
+  port.start()
 })
 
 class UnhandledMessage {
