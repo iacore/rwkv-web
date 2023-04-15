@@ -1,17 +1,17 @@
-import { writable, type Writable, type Readable } from "svelte/store"
+import { writable, type Writable } from "svelte/store"
 
 export type PromiseState = "pending" | "fulfilled" | "rejected"
 
 export type PromiseStore<T> = {
-  state: Readable<PromiseState>
-  data: Readable<T | undefined>
-  error: Readable<any | undefined>
+  state: Writable<PromiseState>
+  data: Writable<T | undefined>
+  error: Writable<any | undefined>
 }
 
-export function promiseToStore<T>(p: Promise<T>): PromiseStore<T> {
-  const state: Writable<PromiseState> = writable("pending")
-  const data: Writable<T | undefined> = writable()
-  const error = writable()
+export function promiseToStore<T>(p: Promise<T>, opts?: Partial<PromiseStore<T>>): PromiseStore<T> {
+  const state: Writable<PromiseState> = (opts && opts.state) || writable("pending")
+  const data: Writable<T | undefined> = (opts && opts.data) || writable()
+  const error = (opts && opts.error) || writable()
 
   p.then((d) => {
     data.set(d)
