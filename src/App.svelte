@@ -1,18 +1,31 @@
 <script lang="ts">
-  // import Counter from './lib/Counter.svelte'
+import AppLoaded from "./lib/AppLoaded.svelte"
+import { type TokenizerWasm, tokenizer_promise } from "./lib/tokenizer_shim"
+import { onMount } from "svelte"
+
+let server = "http://localhost:5000"
+
+let a: Promise<TokenizerWasm> = new Promise(() => {})
+
+onMount(() => {
+  a = tokenizer_promise()
+})
+// import Counter from './lib/Counter.svelte'
 </script>
 
 <main>
-  <h1>Vite + Svelte</h1>
+  <h1>RWKV frontend</h1>
 
-  <button>do??</button>
-  
+  Server<input type="text" bind:value="{server}" />
 
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
+  {#await a}
+    Loading tokenizer...
+  {:then tokenizer}
+    <AppLoaded server="{new URL(server)}" tokenizer="{tokenizer}" />
+  {/await}
+
+  <!-- <button>whta</button> -->
 </main>
 
 <style>
-  
 </style>
