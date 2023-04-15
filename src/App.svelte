@@ -48,7 +48,7 @@ onMount(() => {})
     >Server
     <input type="text" bind:value="{server}" />
     <button
-      class="border px-1 ml-0.5"
+      class="border px-1 ml-0.5 -my-1"
       on:click="{() => {
         server = server
       }}">Retry</button
