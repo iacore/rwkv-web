@@ -9,8 +9,8 @@ export let data: ExNodeData
 	on:neodrag
 	on:neodrag:end>
 	<svelte:fragment slot="content">
-		<div><label>state <input type="text" disabled /></label></div>
-    <div><label>probs <input type="text" disabled /></label></div>
+		<label>state <input type="text" disabled /></label>
+    <label>probs <input type="text" disabled /></label>
 	</svelte:fragment>
 	<svelte:fragment slot="actions">
 		<button class="btn-inline">Infer more</button>

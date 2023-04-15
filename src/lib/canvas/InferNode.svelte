@@ -23,18 +23,14 @@ async function submit() {
   const server = $store_server!
   const res = await server.postInfer(tokens, null)
   console.log(res)
-
 }
-
 </script>
 
 <ExNode title="Infer" data="{data}" on:neodrag:start on:neodrag on:neodrag:end>
   <svelte:fragment slot="content">
-    <div><label>state <input type="text" disabled /></label></div>
-    <div><label>prompt <input type="text" bind:value="{prompt}" /></label></div>
-    <div>
-      <label>tokens <input type="text" disabled value="{tokens}" /></label>
-    </div>
+    <label>state <input type="text" disabled /></label>
+    <label>prompt <input type="text" bind:value="{prompt}" /></label>
+    <label>tokens <input type="text" disabled value="{tokens}" /></label>
   </svelte:fragment>
   <svelte:fragment slot="actions">
     <button class="btn-inline" on:click="{submit}" disabled="{!can_submit}"

@@ -27,20 +27,30 @@ function onDrag(e) {
   on:neodrag
   on:neodrag:end
 >
-  <div class="title font-bold">{title}</div>
-  <div class="content">
+  <div class="title font-bold px-1">{title}</div>
+  <div class="content px-1 pb-2">
     <slot name="content" />
   </div>
-  <div class="actions">
+  <div class="actions flex -mr-[1px] justify-end">
     <slot name="actions" />
   </div>
 </div>
 
 <style>
 .node {
-  outline: solid 1px white;
-  display: inline-block;
   position: absolute;
+  outline: solid 1px white;
+  width: 20rem;
   background-color: var(--color-background);
+}
+.content {
+  display: grid;
+  grid-auto-columns: auto 1fr;
+}
+.content :global(label) {
+  display: grid;
+  @apply gap-1;
+  grid-template-columns: subgrid;
+  grid-column: span 2;
 }
 </style>

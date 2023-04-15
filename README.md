@@ -7,7 +7,8 @@ This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) run
 ## TODO
 
 - better serializer
-- node sync
+- node sync pos/data
+    - raise node when dragged/clicked
 - infer spawn node
 - infer single token (node)
 - sample node

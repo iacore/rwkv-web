@@ -39,4 +39,7 @@
     @apply disabled:text-text/75;
     @apply enabled:hover:bg-hl;
   }
+  .btn-inline + .btn-inline {
+    @apply -ml-[1px];
+  }
 }

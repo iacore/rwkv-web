@@ -4,8 +4,8 @@ import { resetState, store_temperature, store_top_p } from "./stores"
 
 <div class="flex justify-between items-stretch flex-wrap gap-y-[1px]">
   <span
-    ><button class="btn-inline -mr-[1px]">Infer anew</button><button
-      class="btn-inline -mr-[1px]" on:click="{resetState}">Reset</button
+    ><button class="btn-inline">Infer anew</button><button
+      class="btn-inline" on:click="{resetState}">Reset</button
     ></span
   >
   <span class="flex items-stretch"
