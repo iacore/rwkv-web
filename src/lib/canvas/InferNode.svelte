@@ -29,7 +29,7 @@ async function submit() {
 <ExNode title="Infer" data="{data}" on:neodrag:start on:neodrag on:neodrag:end>
   <svelte:fragment slot="content">
     <label>state <input type="text" disabled /></label>
-    <label>prompt <input type="text" bind:value="{prompt}" /></label>
+    <label>prompt <textarea rows="10" bind:value="{prompt}"></textarea></label>
     <label>tokens <input type="text" disabled value="{tokens}" /></label>
   </svelte:fragment>
   <svelte:fragment slot="actions">
