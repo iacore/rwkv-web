@@ -1,7 +1,8 @@
 <script lang="ts">
 import type { TokenizerWasm } from "$lib/tokenizer_shim"
+import type { RWKVServer } from "./server"
 
-export let server: URL
+export let server: RWKVServer
 export let tokenizer: TokenizerWasm
 </script>
 
