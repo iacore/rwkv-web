@@ -14,3 +14,4 @@ This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) run
 - infer single token (node)
 - sample node
 - use consistent wording
+- write readme

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type TokenizerWasm, tokenizer_promise } from "./lib/tokenizer_shim"
+import { TokenizerHandle, load as loadTokenizer } from "./lib/tokenizers/shim"
 import { onMount } from "svelte"
 import { handle_promise } from "svelte/internal"
 import {
@@ -20,12 +20,12 @@ let {
   state: tok_state,
   data: tok_data,
   error: tok_error,
-}: PromiseStore<TokenizerWasm> = promiseToStore(tokenizer_promise(), {
+} = promiseToStore<TokenizerHandle>(loadTokenizer(), {
   data: store_tokenizer,
 })
 
 let srv_state, srv_data, srv_error
-$: {
+function retry(server: string) {
   store_server.set(undefined)
   let { state, data, error } = promiseToStore(RWKVClient.load(server), {
     data: store_server,
@@ -34,6 +34,7 @@ $: {
   srv_data = data
   srv_error = error
 }
+$: retry(server)
 
 $: {
   if ($tok_error) {
@@ -56,16 +57,15 @@ function setContext(arg0: string, srv_data: any) {
 
 <div id="app-root">
   <header class="flex gap-4 justify-between items-center">
-    <span id="site-icon">RWKV<small class="italic text-[.5em] -ml-1">Δ</small></span>
+    <span id="site-icon"
+      >RWKV<small class="italic text-[.5em] -ml-1">Δ</small></span
+    >
     <span
       >Server
       <code class="whitespace-nowrap"
         >[{promiseStateFancyString($srv_state)}]</code
-      ><button
-        class="btn-inline mr-1"
-        on:click="{() => {
-          server = server
-        }}">Retry</button
+      ><button class="btn-inline mr-1" on:click="{() => retry(server)}"
+        >Retry</button
       ><input type="text" bind:value="{server}" />
     </span>
     <span
@@ -75,23 +75,23 @@ function setContext(arg0: string, srv_data: any) {
     >
   </header>
   <hr />
+  <ModelInfo data="{$store_server?.info}" />
   <div>
     {#if $tok_state == "rejected"}
-      <p>
+      <p class="px-1 pb-1">
         Error when loading tokenizer<br /><span class="text-hl"
           >{$tok_error}</span
         >
       </p>
     {/if}
     {#if $srv_state == "rejected"}
-      <p>
+      <p class="px-1 pb-1">
         Error when connecting to server<br /><span class="text-hl"
           >{$srv_error}</span
         >
       </p>
     {/if}
   </div>
-  <ModelInfo data="{$store_server?.info}" />
   <hr />
   <TopLevel />
   <hr />

@@ -1,6 +1,6 @@
 import { writable, type Writable } from "svelte/store"
 import type { RWKVClient } from "./api"
-import type { TokenizerWasm } from "./tokenizer_shim"
+import type { TokenizerWasm } from "./tokenizers/shim"
 import type { NodeState } from "./canvas/mod"
 
 export const store_server: Writable<RWKVClient | undefined> = writable()
