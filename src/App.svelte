@@ -27,6 +27,17 @@ $: {
   srv_error = error
 }
 
+$: {
+  if ($tok_error) {
+    console.error($tok_error)
+  }
+}
+$: {
+  if ($srv_error) {
+    console.error($srv_error)
+  }
+}
+
 onMount(() => {})
 // import Counter from './lib/Counter.svelte'
 </script>
@@ -53,7 +64,7 @@ onMount(() => {})
   >
 </header>
 
-<hr>
+<hr />
 
 <main>
   {#if $tok_state == "fulfilled" && $srv_state == "fulfilled"}
