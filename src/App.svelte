@@ -1,18 +1,16 @@
 <script lang="ts">
-import { TokenizerHandle, load as loadTokenizer } from "./lib/tokenizers/shim"
 import { onMount } from "svelte"
-import { handle_promise } from "svelte/internal"
+import inspect from "object-inspect";
+import { RWKVClient } from "./lib/api"
+import Canvas from "./lib/Canvas.svelte"
+import ModelInfo from "./lib/ModelInfo.svelte"
+import { store_server, store_tokenizer } from "./lib/stores"
+import { load as loadTokenizer, TokenizerHandle } from "./lib/tokenizers/shim"
+import TopLevel from "./lib/TopLevel.svelte"
 import {
   promiseStateFancyString,
-  promiseToStore,
-  type PromiseStore,
+  promiseToStore
 } from "./lib/util"
-import { get } from "svelte/store"
-import { RWKVClient } from "./lib/api"
-import { store_server, store_tokenizer } from "./lib/stores"
-import ModelInfo from "./lib/ModelInfo.svelte"
-import Canvas from "./lib/Canvas.svelte"
-import TopLevel from "./lib/TopLevel.svelte"
 
 let server = "http://localhost:5000"
 
@@ -80,14 +78,14 @@ function setContext(arg0: string, srv_data: any) {
     {#if $tok_state == "rejected"}
       <p class="px-1 pb-1">
         Error when loading tokenizer<br /><span class="text-hl"
-          >{$tok_error}</span
+          >{inspect($tok_error)}</span
         >
       </p>
     {/if}
     {#if $srv_state == "rejected"}
       <p class="px-1 pb-1">
         Error when connecting to server<br /><span class="text-hl"
-          >{$srv_error}</span
+          >{inspect($srv_error)}</span
         >
       </p>
     {/if}

@@ -7,6 +7,9 @@ dependencies:
   '@neodrag/svelte':
     specifier: ^2.0.3
     version: 2.0.3
+  object-inspect:
+    specifier: ^1.12.3
+    version: 1.12.3
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte':
@@ -21,12 +24,6 @@ devDependencies:
   postcss:
     specifier: ^8.4.21
     version: 8.4.21
-  postcss-nested:
-    specifier: ^6.0.1
-    version: 6.0.1(postcss@8.4.21)
-  postcss-nesting:
-    specifier: ^11.2.2
-    version: 11.2.2(postcss@8.4.21)
   svelte:
     specifier: ^3.55.1
     version: 3.55.1
@@ -47,15 +44,6 @@ devDependencies:
     version: 4.2.0
 
 packages:
-
-  /@csstools/selector-specificity@2.2.0(postcss-selector-parser@6.0.11):
-    resolution: {integrity: sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw==}
-    engines: {node: ^14 || ^16 || >=18}
-    peerDependencies:
-      postcss-selector-parser: ^6.0.10
-    dependencies:
-      postcss-selector-parser: 6.0.11
-    dev: true
 
   /@esbuild/android-arm64@0.17.16:
     resolution: {integrity: sha512-QX48qmsEZW+gcHgTmAj+x21mwTz8MlYQBnzF6861cNdQGvj2jzzFjqH0EBabrIa/WVZ2CHolwMoqxVryqKt8+Q==}
@@ -802,6 +790,10 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
+  /object-inspect@1.12.3:
+    resolution: {integrity: sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==}
+    dev: false
+
   /once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
@@ -888,27 +880,6 @@ packages:
     peerDependencies:
       postcss: ^8.2.14
     dependencies:
-      postcss: 8.4.21
-      postcss-selector-parser: 6.0.11
-    dev: true
-
-  /postcss-nested@6.0.1(postcss@8.4.21):
-    resolution: {integrity: sha512-mEp4xPMi5bSWiMbsgoPfcP74lsWLHkQbZc3sY+jWYd65CUwXrUaTp0fmNpa01ZcETKlIgUdFN/MpS2xZtqL9dQ==}
-    engines: {node: '>=12.0'}
-    peerDependencies:
-      postcss: ^8.2.14
-    dependencies:
-      postcss: 8.4.21
-      postcss-selector-parser: 6.0.11
-    dev: true
-
-  /postcss-nesting@11.2.2(postcss@8.4.21):
-    resolution: {integrity: sha512-aOTiUniAB1bcPE6GGiynWRa6PZFPhOTAm5q3q5cem6QeSijIHHkWr6gs65ukCZMXeak8yXeZVbBJET3VM+HlhA==}
-    engines: {node: ^14 || ^16 || >=18}
-    peerDependencies:
-      postcss: ^8.4
-    dependencies:
-      '@csstools/selector-specificity': 2.2.0(postcss-selector-parser@6.0.11)
       postcss: 8.4.21
       postcss-selector-parser: 6.0.11
     dev: true
