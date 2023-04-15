@@ -26,3 +26,9 @@
 :root {
   color-scheme: light dark;
 }
+
+#app {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+}

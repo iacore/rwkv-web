@@ -66,10 +66,10 @@ onMount(() => {})
 
 <hr />
 
-<main>
-  {#if $tok_state == "fulfilled" && $srv_state == "fulfilled"}
-    <AppLoaded server="{get(srv_data)}" tokenizer="{get(tok_data)}" />
-  {:else}
+{#if $tok_state == "fulfilled" && $srv_state == "fulfilled"}
+  <AppLoaded server="{get(srv_data)}" tokenizer="{get(tok_data)}" />
+{:else}
+  <div>
     {#if $tok_state != "rejected" && $srv_state != "rejected"}
       <p>Loading...</p>
     {/if}
@@ -87,8 +87,8 @@ onMount(() => {})
         >
       </p>
     {/if}
-  {/if}
-</main>
+  </div>
+{/if}
 
 <style>
 </style>
