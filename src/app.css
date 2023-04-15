@@ -1,8 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-hl-frag: 245 158 11; 
+    --color-hl: rgb(var(--color-hl-frag));
+    --color-text: black;
+    --color-background: white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-hl-frag: 221, 167, 31;
+      --color-text: white;
+      --color-background: black;
+    }
+  }
+}
+
 :root {
   color-scheme: light dark;
 
   font-family: "Recursive", "Nono Sans CJK", "Nono Sans CJK SC",
     "Nono Sans CJK TC", sans-serif;
 
-  line-height: 1.5;
+  /* color: var(--color-text);
+  background: var(--color-background); */
 }
