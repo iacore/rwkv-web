@@ -13,3 +13,9 @@ design notes
   font-weight: 600;
 }
 ```
+
+## Export svg
+
+```shell
+inkscape -l --export-filename=public/favicon.svg design/favicon.svg
+```

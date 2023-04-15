@@ -119,7 +119,7 @@ header {
 #site-icon {
   font-size: 3.3rem;
   height: 1.5rem;
-  font-variation-settings: "slnt" -9;
+  font-variation-settings: "MONO" 0.5, "slnt" -9;
   font-weight: 650;
   margin-top: calc(-0.53 * 3.3rem);
 }
