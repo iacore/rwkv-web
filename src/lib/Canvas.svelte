@@ -1,31 +1,43 @@
 <script lang="ts">
-import ExNode from "./canvas/ExNode.svelte"
+import { draggable } from "@neodrag/svelte"
+import { serialize } from "god-tier-serializer"
+
+import { state_canvas, state_nodes } from "./stores"
+
 import BatchInferNode from "./canvas/BatchInferNode.svelte"
 import ResultNode from "./canvas/ResultNode.svelte"
 
-import { draggable } from "@neodrag/svelte"
-import { state_canvas } from "./stores"
-
 let elCanvas
 let elNodes
-function onDrag(e) {
-  state_canvas.update(o => ({
+function onDrag(detail) {
+  state_canvas.update((o) => ({
     ...o,
-    x: e.detail.offsetX,
-    y: e.detail.offsetY,
+    x: detail.offsetX,
+    y: detail.offsetY,
   }))
 }
 </script>
 
 <div class="canvas isolate" bind:this="{elCanvas}">
-  <div class="nodes relative" bind:this="{elNodes}" use:draggable={{
-    position: $state_canvas,
-    handle: elCanvas,
-    cancel: elNodes,
-  }}
-    on:neodrag={onDrag}>
-    <BatchInferNode data={{x: 100, y: 100-60}}/>
-    <ResultNode data={{x: 100, y: 400-60}}/>
+  <div
+    class="nodes relative"
+    bind:this="{elNodes}"
+    use:draggable="{{
+      position: $state_canvas,
+      handle: elCanvas,
+      cancel: elNodes,
+      onDrag,
+    }}"
+  >
+    {#each $state_nodes.items as node}
+      {#if node.type == "infer"}
+        <BatchInferNode data={node} />
+      {:else if node.type == "result"}
+        <ResultNode data={node} />
+      {:else}
+        Unknown node: {serialize(node)}
+      {/if}
+    {/each}
   </div>
 </div>
 

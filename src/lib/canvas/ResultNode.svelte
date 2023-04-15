@@ -1,20 +1,19 @@
 <script lang="ts">
-import ExNode, { type ExNodeData } from "./ExNode.svelte"
+import ExNode from "./ExNode.svelte"
+import type { NodeState_Result } from "./mod"
 
-export let data: ExNodeData
+export let data: NodeState_Result
 </script>
 
-<ExNode title="Infer Result" data={data}
-	on:neodrag:start
-	on:neodrag
-	on:neodrag:end>
-	<svelte:fragment slot="content">
-		<label>state <input type="text" disabled /></label>
-    <label>probs <input type="text" disabled /></label>
+<ExNode title="Infer Result" data="{data}">
+  <svelte:fragment slot="content">
+    <label>state <input type="text" disabled /></label>
+    <label>logits <input type="text" disabled /></label>
     <label>next <select></select></label>
-	</svelte:fragment>
-	<svelte:fragment slot="actions">
-		<button class="btn-inline">Infer more</button>
-		<button class="btn-inline">Sample</button>
-	</svelte:fragment>
+  </svelte:fragment>
+  <svelte:fragment slot="actions">
+    <button class="btn-inline">Infer Next</button>
+    <button class="btn-inline">Infer Batch</button>
+    <button class="btn-inline">Sample</button>
+  </svelte:fragment>
 </ExNode>
