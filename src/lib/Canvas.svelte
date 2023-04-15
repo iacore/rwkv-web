@@ -1,4 +1,18 @@
+<script lang="ts">
+import ExNode from "./canvas/ExNode.svelte"
+import InferNode from "./canvas/InferNode.svelte"
+import ResultNode from "./canvas/ResultNode.svelte"
+</script>
 
-<!-- {tokenizer.encode("hello").input_ids} -->
+<div class="canvas isolate">
+  <div class="nodes">
+    <InferNode data={{x: 100, y: 100}}/>
+    <ResultNode data={{x: 100, y: 230}}/>
+  </div>
+</div>
 
-<div class="bg-black">Hello</div>
+<style>
+.canvas {
+  position: relative;
+}
+</style>

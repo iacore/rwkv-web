@@ -16,6 +16,8 @@ export default {
     extend: {
       colors: {
         hl: "rgb(var(--color-hl-frag) / <alpha-value>)",
+        text: "rgb(var(--color-text-frag) / <alpha-value>)",
+        background: "rgb(var(--color-background-frag) / <alpha-value>)",
       },
     },
   },

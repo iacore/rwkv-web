@@ -5,17 +5,27 @@
 @layer base {
   :root {
     --color-hl-frag: 245 158 11;
+    --color-text-frag: 0 0 0;
+    --color-background-frag: 255 255 255;
     --color-hl: rgb(var(--color-hl-frag));
-    /* --color-text: black;
-    --color-background: white; */
+    --color-text: black;
+    --color-background: white;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
       --color-hl-frag: 221 167 31;
-      /* --color-text: white;
-      --color-background: black; */
+      --color-text-frag: 255 255 255;
+      --color-background-frag: 0 0 0;
+      --color-text: white;
+      --color-background: black;
     }
+  }
+
+  :root {
+    color-scheme: light dark;
+    color: var(--color-text);
+    background-color: var(--color-background);
   }
 
   code {
@@ -23,6 +33,10 @@
   }
 }
 
-:root {
-  color-scheme: light dark;
+@layer components {
+  .btn-inline {
+    @apply border px-1 -my-[1px];
+    @apply disabled:text-text/75;
+    @apply enabled:hover:bg-hl;
+  }
 }

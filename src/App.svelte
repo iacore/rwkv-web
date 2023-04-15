@@ -8,10 +8,11 @@ import {
   type PromiseStore,
 } from "./lib/util"
 import { get } from "svelte/store"
-import { RWKVServer } from "./lib/server"
+import { RWKVClient } from "./lib/api"
 import { store_server, store_tokenizer } from "./lib/stores"
 import ModelInfo from "./lib/ModelInfo.svelte"
 import Canvas from "./lib/Canvas.svelte"
+import TopLevel from "./lib/TopLevel.svelte"
 
 let server = "http://localhost:5000"
 
@@ -25,7 +26,8 @@ let {
 
 let srv_state, srv_data, srv_error
 $: {
-  let { state, data, error } = promiseToStore(RWKVServer.load(server), {
+  store_server.set(undefined)
+  let { state, data, error } = promiseToStore(RWKVClient.load(server), {
     data: store_server,
   })
   srv_state = state
@@ -53,20 +55,18 @@ function setContext(arg0: string, srv_data: any) {
 </script>
 
 <div id="app-root">
-  <header class="flex gap-4 justify-between">
+  <header class="flex gap-4 justify-between items-center">
     <span id="site-icon">RWKV</span>
     <span
       >Server
-      <input type="text" bind:value="{server}" />
-      <button
-        class="border px-1 ml-0.5 -my-1"
+      <code class="whitespace-nowrap"
+        >[{promiseStateFancyString($srv_state)}]</code
+      ><button
+        class="btn-inline mr-1"
         on:click="{() => {
           server = server
         }}">Retry</button
-      >
-      <code class="whitespace-nowrap"
-        >[{promiseStateFancyString($srv_state)}]</code
-      >
+      ><input type="text" bind:value="{server}" />
     </span>
     <span
       >Tokenizer <code class="whitespace-nowrap"
@@ -74,9 +74,7 @@ function setContext(arg0: string, srv_data: any) {
       ></span
     >
   </header>
-
   <hr />
-
   <div>
     {#if $tok_state == "rejected"}
       <p>
@@ -93,11 +91,10 @@ function setContext(arg0: string, srv_data: any) {
       </p>
     {/if}
   </div>
-
   <ModelInfo data="{$store_server?.info}" />
-
   <hr />
-
+  <TopLevel />
+  <hr />
   <Canvas />
 </div>
 
@@ -105,7 +102,7 @@ function setContext(arg0: string, srv_data: any) {
 #app-root {
   height: 100vh;
   display: grid;
-  grid-template-rows: repeat(5, auto) 1fr;
+  grid-template-rows: repeat(7, auto) 1fr;
 }
 
 #app-root > * {
@@ -121,6 +118,6 @@ header {
   height: 1.5rem;
   font-variation-settings: "MONO" 0.5, "slnt" -9;
   font-weight: 650;
-  margin-top: calc(-0.53 * 3.3rem);
+  margin-top: calc(-3.3rem);
 }
 </style>
