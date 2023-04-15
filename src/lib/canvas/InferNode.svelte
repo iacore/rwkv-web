@@ -1,5 +1,6 @@
 <script lang="ts">
 import { store_server, store_tokenizer } from "../stores"
+import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode, { type ExNodeData } from "./ExNode.svelte"
 
 export let data: ExNodeData
@@ -12,7 +13,11 @@ $: {
   else {
     let tok = $store_tokenizer
     if (tok) {
-      tokens = Array.from(tok.encode(prompt, true).input_ids)
+      async function tokenize_go() {
+        tokens = Array.from((await tok!.encode(prompt, true)))
+      }
+
+      tokenize_go()
     }
   }
 }
@@ -29,7 +34,7 @@ async function submit() {
 <ExNode title="Infer" data="{data}" on:neodrag:start on:neodrag on:neodrag:end>
   <svelte:fragment slot="content">
     <label>state <input type="text" disabled /></label>
-    <label>prompt <textarea rows="10" bind:value="{prompt}"></textarea></label>
+    <label>prompt <textarea rows="6" bind:value="{prompt}"></textarea></label>
     <label>tokens <input type="text" disabled value="{tokens}" /></label>
   </svelte:fragment>
   <svelte:fragment slot="actions">

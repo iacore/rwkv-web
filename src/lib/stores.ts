@@ -1,10 +1,10 @@
 import { writable, type Writable } from "svelte/store"
 import type { RWKVClient } from "./api"
-import type { TokenizerWasm } from "./tokenizers/shim"
+import type { TokenizerHandle } from "./tokenizers/shim"
 import type { NodeState } from "./canvas/mod"
 
 export const store_server: Writable<RWKVClient | undefined> = writable()
-export const store_tokenizer: Writable<TokenizerWasm | undefined> = writable()
+export const store_tokenizer: Writable<TokenizerHandle | undefined> = writable()
 
 export const store_temperature = writable(1.0)
 export const store_top_p = writable(0.85)
