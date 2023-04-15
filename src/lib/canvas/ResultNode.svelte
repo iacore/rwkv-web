@@ -11,6 +11,7 @@ export let data: ExNodeData
 	<svelte:fragment slot="content">
 		<label>state <input type="text" disabled /></label>
     <label>probs <input type="text" disabled /></label>
+    <label>next <select></select></label>
 	</svelte:fragment>
 	<svelte:fragment slot="actions">
 		<button class="btn-inline">Infer more</button>

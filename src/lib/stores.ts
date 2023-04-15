@@ -1,3 +1,4 @@
+import { serialize, deserialize } from "god-tier-serializer"
 import { writable, type Writable } from "svelte/store"
 import type { RWKVClient } from "./api"
 import type { TokenizerHandle } from "./tokenizers/shim"
@@ -19,13 +20,13 @@ export function stored<T>(key: string, init: () => T): Resetable<T> {
       ? init()
       : (() => {
           try {
-            return JSON.parse(stored)
+            return deserialize(stored)
           } catch {
             return init()
           }
         })()
   ) as Resetable<T>
-  content.subscribe((value) => localStorage.setItem(key, JSON.stringify(value)))
+  content.subscribe((value) => localStorage.setItem(key, serialize(value)))
   content.reset = function () {
     this.set(init())
   }

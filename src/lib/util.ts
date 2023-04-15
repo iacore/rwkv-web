@@ -38,3 +38,8 @@ export function promiseStateFancyString(s: PromiseState): string {
       return "FAIL"
   }
 }
+
+export function inspect(a: any): string {
+  if ('message' in a) return a.message.toString()
+  return a.toString()
+}

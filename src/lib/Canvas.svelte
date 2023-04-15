@@ -1,6 +1,6 @@
 <script lang="ts">
 import ExNode from "./canvas/ExNode.svelte"
-import InferNode from "./canvas/InferNode.svelte"
+import BatchInferNode from "./canvas/BatchInferNode.svelte"
 import ResultNode from "./canvas/ResultNode.svelte"
 
 import { draggable } from "@neodrag/svelte"
@@ -24,8 +24,8 @@ function onDrag(e) {
     cancel: elNodes,
   }}
     on:neodrag={onDrag}>
-    <InferNode data={{x: 100, y: 100}}/>
-    <ResultNode data={{x: 100, y: 230}}/>
+    <BatchInferNode data={{x: 100, y: 100-60}}/>
+    <ResultNode data={{x: 100, y: 400-60}}/>
   </div>
 </div>
 

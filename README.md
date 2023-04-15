@@ -6,8 +6,6 @@ This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) run
 
 ## TODO
 
-- load tokenizer async
-- better serializer
 - node sync pos/data
     - raise node when dragged/clicked
 - infer spawn node
