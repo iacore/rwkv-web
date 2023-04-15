@@ -56,7 +56,7 @@ function setContext(arg0: string, srv_data: any) {
 
 <div id="app-root">
   <header class="flex gap-4 justify-between items-center">
-    <span id="site-icon">RWKV</span>
+    <span id="site-icon">RWKV<small class="italic text-[.5em] -ml-1">Δ</small></span>
     <span
       >Server
       <code class="whitespace-nowrap"
@@ -98,7 +98,7 @@ function setContext(arg0: string, srv_data: any) {
   <Canvas />
 </div>
 
-<style>
+<style lang="postcss">
 #app-root {
   height: 100vh;
   display: grid;
