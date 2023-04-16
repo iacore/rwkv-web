@@ -29,6 +29,12 @@ function onDrag(detail) {
   data.y = detail.offsetY
   // state_nodes.save()
 }
+
+function close() {
+  state_nodes.update(o => ({
+    items: o.items.filter(n => n.id != data.id)
+  }))
+}
 </script>
 
 <div
@@ -42,7 +48,10 @@ function onDrag(detail) {
     onDrag,
   }}"
 >
-  <div class="title font-bold px-1">{title}</div>
+  <div class=" justify-between">
+    <span class="title font-bold px-1">{title}</span>
+    <button class="btn-inline -mr-[1px] leading-none pb-0.5 float-right" on:click={close}>x</button>
+  </div>
   <div class="content pl-1 pr-2 pb-2">
     <slot name="content" />
   </div>
