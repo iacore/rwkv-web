@@ -1,5 +1,7 @@
 import { get, writable, type Writable } from "svelte/store"
 import { nanoid } from "nanoid"
+import { debounce } from "lodash"
+import * as localForage from "localforage";
 
 import type { RWKVClient } from "./api"
 import type { TokenizerHandle } from "./tokenizers/shim"
@@ -29,9 +31,10 @@ export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
         })()
   ) as Resetable<T>
 
-  function save(value: T) {
+  const save = debounce((value: T) => {
     return localStorage.setItem(key, JSON.stringify(value))
-  }
+  }, 1000);
+
   content.save = function () {
     save(get(this))
   }
@@ -39,34 +42,37 @@ export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
     this.set(init())
   }
 
-  window.addEventListener("beforeunload", () => {
-    content.save()
+  let __first = true
+  content.subscribe((value) => {
+    if (__first) {
+      __first = false
+      return
+    }
+    save(value)
   })
 
   return content
 }
 
-export function storedComplex<T>(key: string, init: () => T): Resetable<T> {
-  const stored = localStorage.getItem(key)
+localForage.config({
+  driver: localForage.INDEXEDDB,
+  name: "rwkvd",
+  version: 1,
+})
+
+export async function storedComplex<T>(key: string, init: () => T): Promise<Resetable<T>> {
+  const stored = await localForage.getItem(key)
 
   const content = writable(
     stored === null
       ? init()
-      : (() => {
-          try {
-            return JSON.parse(stored)
-          } catch {
-            return init()
-          }
-        })()
+      : stored
   ) as Resetable<T>
 
-  function save(value: T) {
-    // JSON.stringify()
-    // localStorage.setItem()
-    // todo: do this faster
-    // return localStorage.setItem(key, JSON.stringify(value))
-  }
+  const save = debounce(async (value: T) => {
+    await localForage.setItem(key, value)
+  }, 1000);
+
   content.save = function () {
     save(get(this))
   }
@@ -74,8 +80,13 @@ export function storedComplex<T>(key: string, init: () => T): Resetable<T> {
     this.set(init())
   }
 
-  window.addEventListener("beforeunload", () => {
-    content.save()
+  let __first = true
+  content.subscribe((value) => {
+    if (__first) {
+      __first = false
+      return
+    }
+    save(value)
   })
 
   return content
@@ -91,7 +102,7 @@ export const state_canvas = storedSimple("state.canvas", () => ({ x: 0, y: 0 }))
 export type State_Nodes = {
   items: NodeState[]
 }
-export const state_nodes = storedComplex(
+export const state_nodes = await storedComplex(
   "state.nodes",
   (): State_Nodes => ({
     items: [
@@ -103,23 +114,6 @@ export const state_nodes = storedComplex(
         stacking: 0,
         ...extraInit_Infer,
       },
-      {
-        // for dev
-        id: nanoid(),
-        type: "infer",
-        x: 100,
-        y: 340,
-        stacking: 0,
-        ...extraInit_Infer,
-      },
-      // {
-      //   type: "result",
-      //   x: 100,
-      //   y: 340,
-      //   stacking: 0,
-      //   // todo
-      //   // this default node is temporary for development
-      // },
     ],
   })
 )

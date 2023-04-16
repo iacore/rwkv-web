@@ -24,7 +24,7 @@ const onInput = (ev) => {
     if (tok) {
       async function tokenize_go() {
         data.tokens = await tok!.encode(data.prompt, true)
-        // state_nodes.save()
+        state_nodes.save()
       }
 
       tokenize_go()

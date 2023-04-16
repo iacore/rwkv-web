@@ -30,7 +30,7 @@ function onDragStart(detail) {
 function onDrag(detail) {
   data.x = detail.offsetX
   data.y = detail.offsetY
-  // state_nodes.save()
+  state_nodes.save()
 }
 
 function close() {

@@ -6,13 +6,9 @@ This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) run
 
 ## TODO
 
-- faster incremental save/serialization
-
-- close/delete node btn
-
-- infer spawn node
+- sample (impl+node). should be in rust
 - infer single token (node)
-- sample node
+- streaming infer (node)
 - use consistent wording
 - write readme
 - scroll wheel scroll canvas
