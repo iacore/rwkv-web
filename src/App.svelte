@@ -3,15 +3,22 @@ import { onMount } from "svelte"
 import { get, writable } from "svelte/store"
 import { RWKVClient } from "./lib/api"
 import Canvas from "./lib/Canvas.svelte"
+import LoadStatus from "./lib/LoadStatus.svelte"
 import ModelInfo from "./lib/ModelInfo.svelte"
 import { store_server, store_tokenizer } from "./lib/stores"
 import { load as loadTokenizer, TokenizerHandle } from "./lib/tokenizers/shim"
 import TopLevel from "./lib/TopLevel.svelte"
-import { inspect, type PromiseState, promiseStateFancyString, promiseToStore } from "./lib/util"
+import {
+  inspect,
+  type PromiseState,
+  promiseStateFancyString,
+  promiseToStore,
+} from "./lib/util"
 
 let server = "http://localhost:5000"
 
-let tok_state = writable<PromiseState>("pending"), tok_error = writable(undefined)
+let tok_state = writable<PromiseState>("pending"),
+  tok_error = writable(undefined)
 
 onMount(async () => {
   try {
@@ -59,17 +66,13 @@ function setContext(arg0: string, srv_data: any) {
   <header class="flex gap-4 justify-between items-center">
     <span id="site-icon">RWKV<small class="text-[.5em] -ml-1">Δ</small></span>
     <span
-      >Server
-      <code class="whitespace-nowrap"
-        >[{promiseStateFancyString($srv_state)}]</code
-      ><button class="btn-inline mr-1" on:click="{() => retry(server)}"
-        >Retry</button
+      >Server <LoadStatus data="{$srv_state}" /><button
+        class="btn-inline mr-1"
+        on:click="{() => retry(server)}">Retry</button
       ><input type="text" bind:value="{server}" />
     </span>
     <span
-      >Tokenizer <code class="whitespace-nowrap"
-        >[{promiseStateFancyString($tok_state)}]</code
-      ></span
+      >Tokenizer <LoadStatus data="{$tok_state}" /></span
     >
   </header>
   <hr />

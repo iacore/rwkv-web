@@ -6,9 +6,12 @@ import ExNode from "./ExNode.svelte"
 import type { NodeState_Stream } from "./state"
 
 export let data: NodeState_Stream
+
+let infinite = false
+let pending = 0
 let accumulated = ""
 
-async function next() {
+async function nextToken() {
   // console.log("logits", data.logits)
   const choices=preselect(data.logits,1,0.85);
   // console.log("choices", choices)
@@ -26,6 +29,8 @@ async function next() {
     <span>res <textarea rows="10" value="{accumulated}"></textarea></span>
   </svelte:fragment>
   <svelte:fragment slot="actions">
-    <button class="btn-inline" on:click="{next}">Next</button>
+    <span class:text-hl={pending != 0}>{pending}⧗</span>
+    <label class="checkbox-inline">infinite<input type="checkbox" bind:value={infinite}></label>
+    <button class="btn-inline" on:click="{() => pending++}">Next</button>
   </svelte:fragment>
 </ExNode>

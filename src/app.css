@@ -42,4 +42,22 @@
   .btn-inline + .btn-inline {
     @apply -ml-[1px];
   }
+
+  .checkbox-inline {
+    @apply px-1 flex gap-1;
+  }
+}
+
+@layer utilities {
+  .animate-flicker {
+    animation: flicker 2s step-start infinite;
+    @keyframes flicker {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.4;
+      }
+    }
+  }
 }
