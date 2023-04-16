@@ -12,7 +12,8 @@ export const extraInit = {
 import { state_nodes, store_server, store_tokenizer } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
-import type { NodeState_Infer } from "./mod"
+import type { NodeState_Infer } from "./state"
+import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Infer
 
@@ -55,7 +56,7 @@ async function submit() {
 
 <ExNode title="Batch Inference" data="{data}">
   <svelte:fragment slot="content">
-    <label>state <input type="text" disabled /></label>
+    <span>state <StateViz data={data.state} /></span>
     <label
       >prompt <textarea rows="6" value="{data.prompt}" on:input="{onInput}"
       ></textarea></label

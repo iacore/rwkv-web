@@ -3,7 +3,7 @@
 import { draggable } from "@neodrag/svelte"
 import { get } from "svelte/store"
 import { state_nodes } from "../stores"
-import type { BaseNodeState } from "./mod"
+import type { BaseNodeState } from "./state"
 
 export let title = "(untitled)"
 export let data: BaseNodeState
@@ -79,7 +79,7 @@ function close() {
   display: grid;
   grid-auto-columns: auto 1fr;
 }
-.content :global(label) {
+.content > :global(*) {
   display: grid;
   @apply gap-1;
   grid-template-columns: subgrid;

@@ -1,13 +1,14 @@
 <script lang="ts">
 import ExNode from "./ExNode.svelte"
-import type { NodeState_Result } from "./mod"
+import type { NodeState_Result } from "./state"
+import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Result
 </script>
 
 <ExNode title="Infer Result" data="{data}">
   <svelte:fragment slot="content">
-    <label>state <input type="text" disabled /></label>
+    <span>state <StateViz data={data.state} /></span>
     <label>logits <input type="text" disabled /></label>
     <label>next <select></select></label>
   </svelte:fragment>

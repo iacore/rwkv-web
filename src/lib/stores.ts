@@ -5,7 +5,7 @@ import * as localForage from "localforage";
 
 import type { RWKVClient } from "./api"
 import type { TokenizerHandle } from "./tokenizers/shim"
-import type { NodeState } from "./canvas/mod"
+import type { NodeState } from "./canvas/state"
 import { extraInit as extraInit_Infer } from "./canvas/BatchInferNode.svelte"
 
 export const store_server: Writable<RWKVClient | undefined> = writable()
