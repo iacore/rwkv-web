@@ -69,7 +69,7 @@ function close() {
   </div>
 </div>
 
-<style>
+<style lang="postcss">
 .node {
   position: absolute;
   outline: solid 1px white;
@@ -79,10 +79,13 @@ function close() {
   display: grid;
   grid-auto-columns: auto 256px;
 }
-.content > :global(*) {
+:global(.content > *) {
   display: grid;
   @apply gap-1;
   grid-template-columns: subgrid;
   grid-column: span 2;
+  /* :global(.content > * > :first-child) {
+    text-align: right;
+  } */
 }
 </style>

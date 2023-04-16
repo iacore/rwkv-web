@@ -11,7 +11,7 @@ import {
 } from "./stores"
 
 function newInfer() {
-  const {x, y} = get(state_canvas)
+  const { x, y } = get(state_canvas)
   state_nodes.update((o) => {
     o.items.push({
       id: nanoid(),
@@ -54,8 +54,15 @@ function newInfer() {
         max="1"
         bind:value="{$store_top_p}"
       /></label
-    ><button class="btn-inline" on:click="{(e) => alert('TODO')}">About</button
-    ><button class="btn-inline" on:click="{resetState}">Reset</button></span
+    ><button class="btn-inline" on:click="{resetState}">Reset</button><a
+      class="btn-inline"
+      title="View Source"
+      href="https://github.com/iacore/rwkv-web"
+      target="_blank"
+      rel="noreferrer"
+    >
+      About</a
+    ></span
   >
 </div>
 

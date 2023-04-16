@@ -65,9 +65,10 @@ function setContext(arg0: string, srv_data: any) {
 <div id="app-root">
   <header>
     <div id="site-icon">RWKV<small class="text-[.5em] -ml-1">Δ</small></div>
-    <div class="global-controls flex flex-wrap gap-2">
+    <div class="global-controls flex flex-wrap gap-x-2">
       <span>Tokenizer <LoadStatus state="{$tok_state}" /></span>
-      <span>Server <LoadStatus state="{$srv_state}" /><button
+      <span
+        >Server <LoadStatus state="{$srv_state}" /><button
           class="btn-inline"
           title="Reconnect"
           on:click="{() => retry(server)}">↻</button
@@ -113,7 +114,7 @@ function setContext(arg0: string, srv_data: any) {
 
 header {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto auto 1fr;
   @apply gap-2 items-center;
   overflow: hidden;
 }

@@ -66,7 +66,7 @@ onMount(() => {
     <span
       >logits {#if infinite}<span>-</span>{:else}<LogitViz data="{data.logits}" />{/if}</span
     >
-    <span>res <textarea rows="10" value="{accumulated}" disabled></textarea></span>
+    <span>out <textarea rows="10" value="{accumulated}" disabled></textarea></span>
   </svelte:fragment>
   <svelte:fragment slot="actions">
     <span class:text-hl="{pending != 0}">{pending}⧗</span>

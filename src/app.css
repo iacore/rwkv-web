@@ -36,8 +36,10 @@
 @layer components {
   .btn-inline {
     @apply border px-1 -my-[1px];
-    @apply disabled:text-text/75;
-    @apply enabled:hover:bg-hl;
+    @apply disabled:text-text/60 disabled:cursor-not-allowed;
+    &:not(:disabled) {
+      @apply hover:bg-hl;
+    }
   }
   .btn-inline + .btn-inline {
     @apply -ml-[1px];
