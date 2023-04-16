@@ -22,16 +22,20 @@ let pending = 0
 let accumulated = ""
 
 async function nextToken(client: RWKVClient) {
-  // console.log("logits", data.logits)
   const choices = preselect(data.logits, 1, 0.85)
-  // console.log("choices", choices)
   const token_id = random_choice(choices)
-  // console.log("id", token_id)
-  accumulated += await $store_tokenizer!.decode([token_id], true)
-  const res = await client.postInfer([token_id], data.state)
-  data.state = res.state
-  data.logits = res.logits
-  data = data
+
+  const t0 = async () => {
+    accumulated += await $store_tokenizer!.decode([token_id], true)
+  }
+
+  const t1 = async () => {
+    const res = await client.postInfer([token_id], data.state)
+    data.state = res.state
+    data.logits = res.logits
+  }
+
+  await Promise.all([t0(), t1()])
 }
 
 let stop = false
@@ -58,16 +62,16 @@ onMount(() => {
 
 <ExNode title="Streaming Inference" data="{data}" wip="{true}">
   <svelte:fragment slot="content">
-    <span>state <StateViz data="{data.state}" /></span>
+    <span>state {#if infinite}<span>-</span>{:else}<StateViz data="{data.state}" />{/if}</span>
     <span
-      >logits <LogitViz data="{data.logits}" bind:value="{data.next}" /></span
+      >logits {#if infinite}<span>-</span>{:else}<LogitViz data="{data.logits}" />{/if}</span
     >
-    <span>res <textarea rows="10" value="{accumulated}"></textarea></span>
+    <span>res <textarea rows="10" value="{accumulated}" disabled></textarea></span>
   </svelte:fragment>
   <svelte:fragment slot="actions">
     <span class:text-hl="{pending != 0}">{pending}⧗</span>
     <label class="checkbox-inline"
-      >infinite<input type="checkbox" bind:value="{infinite}" /></label
+      >infinite<input type="checkbox" bind:checked="{infinite}" /></label
     >
     <button class="btn-inline" on:click="{() => pending++}">Next</button>
   </svelte:fragment>

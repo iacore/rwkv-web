@@ -11,8 +11,11 @@ This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) run
     facet by `n_vocab`, `n_state`, `seen_tokens`, also `model_path` as caution
 
 
-- infer single token (node)
-- streaming infer (node)
+- force infer single token (node)
+
+- cache last 16 states
+    - resume from them
+
 - use consistent wording
 - write readme
 - scroll wheel scroll canvas

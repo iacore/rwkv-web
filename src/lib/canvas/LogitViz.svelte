@@ -12,7 +12,7 @@ import type { TokenizerHandle } from "../tokenizers/shim"
 
 export let data: Float32Array
 export let considered: { i: number; p: number }[] = []
-export let value: number | any
+export let value: number | any = null
 
 $: {
   considered = preselect(data, $store_temperature, $store_top_p)
@@ -26,7 +26,7 @@ async function decode(tok: TokenizerHandle, x: number): Promise<string> {
 {#await getTokenizer()}
   <span>No Tokenizer</span>
 {:then tok}
-  <div class="flex justify-stretch outline outline-[1px] outline-text bg-background isolate">
+  <div class="flex justify-stretch isolate">
     {#each considered.slice(0, 512) as choice}
       <button
         class="group hover:bg-hl"
@@ -43,7 +43,8 @@ async function decode(tok: TokenizerHandle, x: number): Promise<string> {
 
 <style lang="postcss">
 button {
-  @apply text-start relative truncate isolate -mr-[1px];
+  @apply text-start relative truncate -mr-[1px] border-y border-l bg-background;
+  
   &:hover {
     @apply overflow-auto z-10 text-text;
   }
