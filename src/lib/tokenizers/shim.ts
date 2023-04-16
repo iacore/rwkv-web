@@ -31,13 +31,13 @@ export class TokenizerHandle {
     })
   }
 
-  decode(tokens: ArrayLike<number>, skip_special_tokens: boolean): Promise<String> {
+  decode(tokens: ArrayLike<number>, skip_special_tokens: boolean): Promise<string> {
     return new Promise((res) => {
       const id = this.nextid++
       this.dispatch.set(id, (ev) => {
         res(ev.data[2])
       })
-      this.worker.postMessage([id, "decode", prompt, skip_special_tokens])
+      this.worker.postMessage([id, "decode", tokens, skip_special_tokens])
     })
   }
 }

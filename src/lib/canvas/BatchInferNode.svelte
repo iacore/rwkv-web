@@ -17,8 +17,7 @@ import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Infer
 
-const onInput = (ev) => {
-  data.prompt = ev.target.value
+$: {
   if (data.prompt == "") data.tokens = new Uint32Array()
   else {
     let tok = $store_tokenizer
@@ -31,6 +30,10 @@ const onInput = (ev) => {
       tokenize_go()
     }
   }
+}
+
+const onInput = (ev) => {
+  data.prompt = ev.target.value
 }
 
 $: can_submit = $store_server && data.tokens.length != 0

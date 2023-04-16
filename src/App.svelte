@@ -7,11 +7,7 @@ import ModelInfo from "./lib/ModelInfo.svelte"
 import { store_server, store_tokenizer } from "./lib/stores"
 import { load as loadTokenizer, TokenizerHandle } from "./lib/tokenizers/shim"
 import TopLevel from "./lib/TopLevel.svelte"
-import {
-  inspect,
-  promiseStateFancyString,
-  promiseToStore
-} from "./lib/util"
+import { inspect, promiseStateFancyString, promiseToStore } from "./lib/util"
 
 let server = "http://localhost:5000"
 
@@ -20,12 +16,15 @@ let {
   state: tok_state,
   data: tok_data,
   error: tok_error,
-} = promiseToStore<TokenizerHandle>((async () => {
-  if (_loaded_tok) return _loaded_tok
-  return loadTokenizer()
-})(), {
-  data: store_tokenizer,
-})
+} = promiseToStore<TokenizerHandle>(
+  (async () => {
+    if (_loaded_tok) return _loaded_tok
+    return loadTokenizer()
+  })(),
+  {
+    data: store_tokenizer,
+  }
+)
 
 let srv_state, srv_data, srv_error
 function retry(server: string) {
@@ -60,9 +59,7 @@ function setContext(arg0: string, srv_data: any) {
 
 <div id="app-root">
   <header class="flex gap-4 justify-between items-center">
-    <span id="site-icon"
-      >RWKV<small class="italic text-[.5em] -ml-1">Δ</small></span
-    >
+    <span id="site-icon">RWKV<small class="text-[.5em] -ml-1">Δ</small></span>
     <span
       >Server
       <code class="whitespace-nowrap"
