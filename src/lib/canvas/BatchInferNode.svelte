@@ -12,12 +12,14 @@ export const extraInit = {
 import { state_nodes, store_server, store_tokenizer } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
-import type { NodeState_Infer } from "./state"
+import { spawnToRight, type NodeState_Infer } from "./state"
 import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Infer
 
-$: {
+$: $store_tokenizer, update()
+
+function update() {
   if (data.prompt == "") data.tokens = new Uint32Array()
   else {
     let tok = $store_tokenizer
@@ -32,37 +34,25 @@ $: {
   }
 }
 
-const onInput = (ev) => {
-  data.prompt = ev.target.value
-}
-
 $: can_submit = $store_server && data.tokens.length != 0
 
 async function submit() {
   const server = $store_server!
   const { logits, state } = await server.postInfer(data.tokens, data.state)
-  state_nodes.update((o) => {
-    o.items.push({
-      id: nanoid(),
-      type: "result",
-      x: data.x + 340,
-      y: data.y,
-      stacking: data.stacking + 1,
-      logits,
-      state,
-      next: null,
-    })
-    return o
+  spawnToRight(data, {
+    type: "result",
+    logits,
+    state,
+    next: null,
   })
 }
 </script>
 
 <ExNode title="Batch Inference" data="{data}">
   <svelte:fragment slot="content">
-    <span>state <StateViz data={data.state} /></span>
+    <span>state <StateViz data="{data.state}" /></span>
     <label
-      >prompt <textarea rows="6" value="{data.prompt}" on:input="{onInput}"
-      ></textarea></label
+      >prompt <textarea rows="6" bind:value="{data.prompt}" on:input={update}></textarea></label
     >
     <label>tokens <input type="text" disabled value="{data.tokens}" /></label>
   </svelte:fragment>

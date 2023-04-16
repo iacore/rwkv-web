@@ -5,7 +5,9 @@ import { state_canvas, state_nodes } from "./stores"
 
 import BatchInferNode from "./canvas/BatchInferNode.svelte"
 import ResultNode from "./canvas/ResultNode.svelte"
+import AnalysisNode from "./canvas/AnalysisNode.svelte"
 import { inspect } from "./util"
+import StreamNode from "./canvas/StreamNode.svelte"
 
 let elCanvas
 let elNodes
@@ -31,9 +33,13 @@ function onDrag(detail) {
   >
     {#each $state_nodes.items as node}
       {#if node.type == "infer"}
-        <BatchInferNode data={node} />
+        <BatchInferNode data="{node}" />
       {:else if node.type == "result"}
-        <ResultNode data={node} />
+        <ResultNode data="{node}" />
+      {:else if node.type == "analysis"}
+        <AnalysisNode data="{node}" />
+      {:else if node.type == "stream"}
+        <StreamNode data="{node}" />
       {:else}
         Unknown node: {inspect(node)}
       {/if}

@@ -13,12 +13,12 @@ $: {
 }
 
 async function decode(tok: TokenizerHandle, x: number): Promise<string> {
-	return await tok.decode([x])
+	return await tok.decode([x], true)
 }
 </script>
 
 <div class="flex justify-stretch">
-  {#each considered as choice}
+  {#each considered.slice(0, 128) as choice}
     <button
 			class="group"
       class:text-hl="{choice.i === value}"

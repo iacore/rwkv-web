@@ -7,6 +7,7 @@ import type { BaseNodeState } from "./state"
 
 export let title = "(untitled)"
 export let data: BaseNodeState
+export let wip = false
 
 let el: HTMLElement | undefined
 let dragcancel: HTMLElement[] = []
@@ -54,7 +55,7 @@ function close() {
   }}"
 >
   <div class=" justify-between">
-    <span class="title font-bold px-1">{title}</span>
+    <span class="title font-bold px-1">{#if wip}<span class="font-normal">[WIP] </span>{/if}{title}</span>
     <button
       class="btn-inline -mr-[1px] leading-none pb-0.5 float-right"
       on:click="{close}">x</button
@@ -72,12 +73,11 @@ function close() {
 .node {
   position: absolute;
   outline: solid 1px white;
-  width: 320px; /* remember this offset */
   background-color: var(--color-background);
 }
 .content {
   display: grid;
-  grid-auto-columns: auto 1fr;
+  grid-auto-columns: auto 256px;
 }
 .content > :global(*) {
   display: grid;

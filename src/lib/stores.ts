@@ -1,7 +1,7 @@
 import { get, writable, type Writable } from "svelte/store"
 import { nanoid } from "nanoid"
 import { debounce } from "lodash"
-import * as localForage from "localforage";
+import * as localForage from "localforage"
 
 import type { RWKVClient } from "./api"
 import type { TokenizerHandle } from "./tokenizers/shim"
@@ -33,7 +33,7 @@ export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
 
   const save = debounce((value: T) => {
     return localStorage.setItem(key, JSON.stringify(value))
-  }, 1000);
+  }, 1000)
 
   content.save = function () {
     save(get(this))
@@ -60,34 +60,38 @@ localForage.config({
   version: 1,
 })
 
-export async function storedComplex<T>(key: string, init: () => T): Promise<Resetable<T>> {
-  const stored = await localForage.getItem(key)
-
-  const content = writable(
-    stored === null
-      ? init()
-      : stored
-  ) as Resetable<T>
+export function storedComplex<T>(key: string, init: () => T, stub: T): Resetable<T> {
+  const content = writable(stub) as Resetable<T>
+  const storedPromise = localForage.getItem<T>(key)
 
   const save = debounce(async (value: T) => {
+    console.debug("save")
     await localForage.setItem(key, value)
-  }, 1000);
+  }, 1000)
 
   content.save = function () {
+    console.debug("save triggered")
     save(get(this))
   }
   content.reset = function () {
     this.set(init())
   }
-
   let __first = true
   content.subscribe((value) => {
+    if (value === undefined) return
     if (__first) {
       __first = false
       return
     }
     save(value)
   })
+
+  const go = async () => {
+    const stored = await storedPromise
+    // console.log(stored)
+    content.set(stored === null ? init() : stored)
+  }
+  go()
 
   return content
 }
@@ -102,7 +106,7 @@ export const state_canvas = storedSimple("state.canvas", () => ({ x: 0, y: 0 }))
 export type State_Nodes = {
   items: NodeState[]
 }
-export const state_nodes = await storedComplex(
+export const state_nodes = storedComplex(
   "state.nodes",
   (): State_Nodes => ({
     items: [
@@ -115,5 +119,7 @@ export const state_nodes = await storedComplex(
         ...extraInit_Infer,
       },
     ],
-  })
+  }), {
+    items: []
+  }
 )

@@ -34,7 +34,7 @@ export class RWKVClient {
   }
 
   async postInfer(
-    tokens: Uint32Array,
+    tokens: Uint32Array | number[],
     state: Uint8Array | null
   ): Promise<InferResponse> {
     const res = await fetch(new URL("/infer", this.base), {
@@ -46,10 +46,12 @@ export class RWKVClient {
       logits: Uint8Array
       state: Uint8Array
     }
-    // console.log(data)
+
+    const logits = new Float32Array(data.logits.slice().buffer)
+    // console.log("infer res", logits, data.logits)
 
     return {
-      logits: new Float32Array(data.logits),
+      logits: logits,
       state: data.state,
     }
   }
