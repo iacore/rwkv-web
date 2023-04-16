@@ -13,14 +13,17 @@ let dragcancel: HTMLElement[] = []
 
 $: {
   if (el) {
-    dragcancel.push(...el.querySelectorAll('input'))
-    dragcancel.push(...el.querySelectorAll('textarea'))
-    dragcancel.push(...el.querySelectorAll('select'))
+    dragcancel.push(...el.querySelectorAll("input"))
+    dragcancel.push(...el.querySelectorAll("textarea"))
+    dragcancel.push(...el.querySelectorAll("select"))
   }
 }
 
 function onDragStart(detail) {
-  const maxStacking = Math.max(-1, ...get(state_nodes).items.map(o => o.stacking--))
+  const maxStacking = Math.max(
+    -1,
+    ...get(state_nodes).items.map((o) => o.stacking--)
+  )
   data.stacking = maxStacking + 1
 }
 
@@ -31,14 +34,16 @@ function onDrag(detail) {
 }
 
 function close() {
-  state_nodes.update(o => ({
-    items: o.items.filter(n => n.id != data.id)
-  }))
+  state_nodes.update((o) => {
+    const i = o.items.findIndex((n) => n.id == data.id)
+    if (i >= 0) o.items.splice(i, 1)
+    return o
+  })
 }
 </script>
 
 <div
-  bind:this={el}
+  bind:this="{el}"
   class="node isolate"
   style:z-index="{data.stacking}"
   use:draggable="{{
@@ -50,7 +55,10 @@ function close() {
 >
   <div class=" justify-between">
     <span class="title font-bold px-1">{title}</span>
-    <button class="btn-inline -mr-[1px] leading-none pb-0.5 float-right" on:click={close}>x</button>
+    <button
+      class="btn-inline -mr-[1px] leading-none pb-0.5 float-right"
+      on:click="{close}">x</button
+    >
   </div>
   <div class="content pl-1 pr-2 pb-2">
     <slot name="content" />
