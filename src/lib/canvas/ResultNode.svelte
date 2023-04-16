@@ -1,5 +1,5 @@
 <script lang="ts">
-import { state_nodes, store_tokenizer } from "../stores"
+import { getClient, state_nodes, store_tokenizer } from "../stores"
 import ExNode from "./ExNode.svelte"
 import LogitViz from "./LogitViz.svelte"
 import { spawnToRight, type NodeState_Result } from "./state"
@@ -28,6 +28,18 @@ $: {
 function onInput(ev) {
   data.next = ev.target.value == null ? null : Number(ev.target.value)
 }
+
+async function forceNext(next: number | null) {
+  if (next == null) return
+  const client = await getClient()
+  const { logits, state } = await client.postInfer([next], data.state)
+  spawnToRight(data, {
+    type: "result",
+    logits,
+    state,
+    next: null,
+  })
+}
 </script>
 
 <ExNode title="Infer Result" data="{data}">
@@ -53,11 +65,16 @@ function onInput(ev) {
     >
   </svelte:fragment>
   <svelte:fragment slot="actions">
-    <button class="btn-inline" on:click={() => spawnToRight(data, {
+    <!-- <button class="btn-inline" on:click={() => spawnToRight(data, {
       type: "analysis",
       logits: data.logits,
-    })}>Analysis</button>
-    <button class="btn-inline" on:click={() => alert("todo")}>Batch▶</button>
+    })}>Analysis</button> -->
+    <button class="btn-inline" on:click={() => forceNext(data.next)} disabled={data.next == null}><abbr title="Force next token">Force</abbr></button>
+    <button class="btn-inline" on:click={() => spawnToRight(data, {
+      type: "infer",
+      state: data.state,
+      prompt: "",
+    })}>Batch▶</button>
     <button class="btn-inline" on:click={() => spawnToRight(data, {
       type: "stream",
       logits: data.logits,

@@ -18,6 +18,7 @@ function createStoreGetter<T>(store: Readable<T>) {
       unsubscribe = store.subscribe((value) => {
         if (value != undefined) {
           res(value)
+          // hack
           if (unsubscribe) unsubscribe()
           else setTimeout(unsubscribe, 0)
         }

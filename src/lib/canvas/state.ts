@@ -12,7 +12,6 @@ export type NodeState_Infer = {
   type: "infer"
   state: Uint8Array | null,
   prompt: string,
-  tokens: Uint32Array,
 } & BaseNodeState
 
 export type NodeState_Result = {

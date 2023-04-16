@@ -60,7 +60,7 @@ onMount(() => {
 })
 </script>
 
-<ExNode title="Streaming Inference" data="{data}" wip="{true}">
+<ExNode title="Streaming Inference" data="{data}">
   <svelte:fragment slot="content">
     <span>state {#if infinite}<span>-</span>{:else}<StateViz data="{data.state}" />{/if}</span>
     <span
