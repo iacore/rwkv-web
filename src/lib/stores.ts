@@ -1,4 +1,4 @@
-import { get, writable, type Writable } from "svelte/store"
+import { get, writable, type Readable, type Writable } from "svelte/store"
 import { nanoid } from "nanoid"
 import { debounce } from "lodash"
 import * as localForage from "localforage"
@@ -8,8 +8,26 @@ import type { TokenizerHandle } from "./tokenizers/shim"
 import type { NodeState } from "./canvas/state"
 import { extraInit as extraInit_Infer } from "./canvas/BatchInferNode.svelte"
 
-export const store_server: Writable<RWKVClient | undefined> = writable()
+export const store_client: Writable<RWKVClient | undefined> = writable()
 export const store_tokenizer: Writable<TokenizerHandle | undefined> = writable()
+
+function createStoreGetter<T>(store: Readable<T>) {
+  return function (): Promise<NonNullable<T>> {
+    return new Promise((res) => {
+      let unsubscribe
+      unsubscribe = store.subscribe((value) => {
+        if (value != undefined) {
+          res(value)
+          if (unsubscribe) unsubscribe()
+          else setTimeout(unsubscribe, 0)
+        }
+      })
+    })
+  }
+}
+
+export const getTokenizer = createStoreGetter(store_tokenizer)
+export const getClient = createStoreGetter(store_client)
 
 export const store_temperature = writable(1.0)
 export const store_top_p = writable(0.85)
@@ -60,7 +78,11 @@ localForage.config({
   version: 1,
 })
 
-export function storedComplex<T>(key: string, init: () => T, stub: T): Resetable<T> {
+export function storedComplex<T>(
+  key: string,
+  init: () => T,
+  stub: T
+): Resetable<T> {
   const content = writable(stub) as Resetable<T>
   const storedPromise = localForage.getItem<T>(key)
 
@@ -76,11 +98,11 @@ export function storedComplex<T>(key: string, init: () => T, stub: T): Resetable
   content.reset = function () {
     this.set(init())
   }
-  let __first = true
+  let __first = 2
   content.subscribe((value) => {
     if (value === undefined) return
-    if (__first) {
-      __first = false
+    if (__first > 0) {
+      __first--
       return
     }
     save(value)
@@ -119,7 +141,8 @@ export const state_nodes = storedComplex(
         ...extraInit_Infer,
       },
     ],
-  }), {
-    items: []
+  }),
+  {
+    items: [],
   }
 )

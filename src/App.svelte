@@ -5,7 +5,7 @@ import { RWKVClient } from "./lib/api"
 import Canvas from "./lib/Canvas.svelte"
 import LoadStatus from "./lib/LoadStatus.svelte"
 import ModelInfo from "./lib/ModelInfo.svelte"
-import { store_server, store_tokenizer } from "./lib/stores"
+import { store_client, store_tokenizer } from "./lib/stores"
 import { load as loadTokenizer, TokenizerHandle } from "./lib/tokenizers/shim"
 import TopLevel from "./lib/TopLevel.svelte"
 import {
@@ -32,9 +32,9 @@ onMount(async () => {
 
 let srv_state, srv_data, srv_error
 function retry(server: string) {
-  store_server.set(undefined)
+  store_client.set(undefined)
   let { state, data, error } = promiseToStore(RWKVClient.load(server), {
-    data: store_server,
+    data: store_client,
   })
   srv_state = state
   srv_data = data
@@ -76,7 +76,7 @@ function setContext(arg0: string, srv_data: any) {
     >
   </header>
   <hr />
-  <ModelInfo data="{$store_server?.info}" />
+  <ModelInfo data="{$store_client?.info}" />
   <div>
     {#if $tok_state == "rejected"}
       <p class="px-1 pb-1">

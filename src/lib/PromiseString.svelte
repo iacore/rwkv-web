@@ -1,9 +1,9 @@
 <script lang="ts">
-export let data: PromiseLike<string | undefined>
+export let data: PromiseLike<string>
 </script>
 
 {#await data}
-	<span class="animate-pulse">⌛</span>
-{:then data} 
-	{data}
+  <span>⧗</span>
+{:then data}
+  {data}
 {/await}

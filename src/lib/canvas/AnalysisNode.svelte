@@ -1,5 +1,5 @@
 <script lang="ts">
-import { state_nodes, store_server, store_tokenizer } from "../stores"
+import { state_nodes, store_client, store_tokenizer } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
 import type { NodeState_Analysis } from "./state"

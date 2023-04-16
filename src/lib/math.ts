@@ -16,7 +16,7 @@ function first_cumsum_over(sorted: TokenChoice[], top_p: number): number {
   for (let i = 0; i < sorted.length; ++i) {
     const { p } = sorted[i]
     cum += p
-    if (cum > top_p) return i
+    if (cum > top_p) return i + 1
   }
   return sorted.length
 }

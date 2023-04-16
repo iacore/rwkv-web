@@ -1,5 +1,7 @@
 <script lang="ts" context="module">
 import { nanoid } from "nanoid"
+import { onMount } from "svelte"
+import { get } from "svelte/store"
 
 export const extraInit = {
   state: null,
@@ -9,7 +11,7 @@ export const extraInit = {
 </script>
 
 <script lang="ts">
-import { state_nodes, store_server, store_tokenizer } from "../stores"
+import { getTokenizer, state_nodes, store_client, store_tokenizer } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
 import { spawnToRight, type NodeState_Infer } from "./state"
@@ -17,12 +19,13 @@ import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Infer
 
-$: $store_tokenizer, update()
+onMount(async () => {
+  update(await getTokenizer())
+})
 
-function update() {
+function update(tok : TokenizerHandle | undefined) {
   if (data.prompt == "") data.tokens = new Uint32Array()
   else {
-    let tok = $store_tokenizer
     if (tok) {
       async function tokenize_go() {
         data.tokens = await tok!.encode(data.prompt, true)
@@ -34,10 +37,10 @@ function update() {
   }
 }
 
-$: can_submit = $store_server && data.tokens.length != 0
+$: can_submit = $store_client && data.tokens.length != 0
 
 async function submit() {
-  const server = $store_server!
+  const server = $store_client!
   const { logits, state } = await server.postInfer(data.tokens, data.state)
   spawnToRight(data, {
     type: "result",
@@ -52,7 +55,7 @@ async function submit() {
   <svelte:fragment slot="content">
     <span>state <StateViz data="{data.state}" /></span>
     <label
-      >prompt <textarea rows="6" bind:value="{data.prompt}" on:input={update}></textarea></label
+      >prompt <textarea rows="6" bind:value="{data.prompt}" on:input={()=>update($store_tokenizer)}></textarea></label
     >
     <label>tokens <input type="text" disabled value="{data.tokens}" /></label>
   </svelte:fragment>

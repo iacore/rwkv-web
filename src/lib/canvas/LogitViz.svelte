@@ -1,7 +1,13 @@
 <script lang="ts">
+import { get } from "svelte/store"
 import { preselect } from "../math"
 import PromiseString from "../PromiseString.svelte"
-import { store_temperature, store_tokenizer, store_top_p } from "../stores"
+import {
+  getTokenizer,
+  store_temperature,
+  store_tokenizer,
+  store_top_p,
+} from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 
 export let data: Float32Array
@@ -13,30 +19,37 @@ $: {
 }
 
 async function decode(tok: TokenizerHandle, x: number): Promise<string> {
-	return await tok.decode([x], true)
+  return await tok.decode([x], true)
 }
 </script>
 
-<div class="flex justify-stretch">
-  {#each considered.slice(0, 128) as choice}
-    <button
-			class="group"
-      class:text-hl="{choice.i === value}"
-      style:flex-grow="{choice.p}"
-      on:click="{() => (value = choice.i)}"
-      ><span class="absolute top-0 group-hover:bg-hl"><PromiseString data={$store_tokenizer && decode($store_tokenizer, choice.i)}/></span></button
-    >
-  {/each}
-</div>
+{#await getTokenizer()}
+  <span>No Tokenizer</span>
+{:then tok}
+  <div class="flex justify-stretch outline outline-[1px] outline-text bg-background isolate">
+    {#each considered.slice(0, 512) as choice}
+      <button
+        class="group hover:bg-hl"
+        class:text-hl="{choice.i === value}"
+        style:flex-grow="{choice.p}"
+        on:click="{() => (value = choice.i)}"
+        ><span class="token-text group-hover:bg-hl group-hover:top-[-100%]"
+          ><PromiseString data="{decode(tok, choice.i)}" /></span
+        ></button
+      >
+    {/each}
+  </div>
+{/await}
 
 <style lang="postcss">
 button {
-  @apply text-start relative truncate isolate border-l -mr-[1px];
+  @apply text-start relative truncate isolate -mr-[1px];
   &:hover {
     @apply overflow-auto z-10 text-text;
   }
 }
-button:last-child {
-  @apply border-r;
+.token-text {
+  @apply absolute top-0;
+  pointer-events: none;
 }
 </style>

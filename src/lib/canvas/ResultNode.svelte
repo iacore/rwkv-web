@@ -33,7 +33,7 @@ function onInput(ev) {
 <ExNode title="Infer Result" data="{data}">
   <svelte:fragment slot="content">
     <span>state <StateViz data="{data.state}" /></span>
-    <!-- <span>logits <LogitViz data="{data.logits}" bind:value={data.next} /></span> -->
+    <span>logits <LogitViz data="{data.logits}" bind:value={data.next} /></span>
     <span
       >next <span class="flex gap-1">
         <input

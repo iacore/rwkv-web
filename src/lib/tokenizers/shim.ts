@@ -3,10 +3,13 @@ import type { EncodingWasm } from "./tokenizers-wasm"
 export class TokenizerHandle {
   nextid = 0
   worker: Worker
-  dispatch: Map<number, (ev: MessageEvent<any>) => void> = new Map()
+  dispatch: Map<number, (ev: MessageEvent<any>) => void> 
+  decodeSingleCache: Map<number, string>
 
   constructor(worker: Worker) {
     this.worker = worker
+    this.dispatch = new Map()
+    this.decodeSingleCache = new Map()
 
     worker.addEventListener("error", console.error) // todo handle error
     worker.addEventListener("messageerror", console.error) // todo handle error
@@ -32,10 +35,20 @@ export class TokenizerHandle {
   }
 
   decode(tokens: ArrayLike<number>, skip_special_tokens: boolean): Promise<string> {
+    const isSingleToken = tokens.length == 1
+    const firstToken = tokens[0]
+    if (isSingleToken) {
+      const cached = this.decodeSingleCache.get(firstToken)
+      if (cached) return Promise.resolve(cached)
+    }
     return new Promise((res) => {
       const id = this.nextid++
       this.dispatch.set(id, (ev) => {
-        res(ev.data[2])
+        const result = ev.data[2]
+        if (isSingleToken) {
+          this.decodeSingleCache.set(firstToken, result)
+        }
+        res(result)
       })
       this.worker.postMessage([id, "decode", tokens, skip_special_tokens])
     })
