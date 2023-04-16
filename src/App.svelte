@@ -63,17 +63,18 @@ function setContext(arg0: string, srv_data: any) {
 </script>
 
 <div id="app-root">
-  <header class="flex gap-4 justify-between items-center">
-    <span id="site-icon">RWKV<small class="text-[.5em] -ml-1">Δ</small></span>
-    <span
-      >Server <LoadStatus data="{$srv_state}" /><button
-        class="btn-inline mr-1"
-        on:click="{() => retry(server)}">Retry</button
-      ><input type="text" bind:value="{server}" />
-    </span>
-    <span
-      >Tokenizer <LoadStatus data="{$tok_state}" /></span
-    >
+  <header>
+    <div id="site-icon">RWKV<small class="text-[.5em] -ml-1">Δ</small></div>
+    <div class="global-controls flex flex-wrap gap-2">
+      <span>Tokenizer <LoadStatus state="{$tok_state}" /></span>
+      <span>Server <LoadStatus state="{$srv_state}" /><button
+          class="btn-inline"
+          title="Reconnect"
+          on:click="{() => retry(server)}">↻</button
+        ></span
+      >
+      <input type="text" bind:value="{server}" />
+    </div>
   </header>
   <hr />
   <ModelInfo data="{$store_client?.info}" />
@@ -111,6 +112,9 @@ function setContext(arg0: string, srv_data: any) {
 }
 
 header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  @apply gap-2 items-center;
   overflow: hidden;
 }
 
