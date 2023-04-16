@@ -1,11 +1,11 @@
 <script lang="ts">
 import { draggable } from "@neodrag/svelte"
-import { serialize } from "god-tier-serializer"
 
 import { state_canvas, state_nodes } from "./stores"
 
 import BatchInferNode from "./canvas/BatchInferNode.svelte"
 import ResultNode from "./canvas/ResultNode.svelte"
+import { inspect } from "./util"
 
 let elCanvas
 let elNodes
@@ -35,7 +35,7 @@ function onDrag(detail) {
       {:else if node.type == "result"}
         <ResultNode data={node} />
       {:else}
-        Unknown node: {serialize(node)}
+        Unknown node: {inspect(node)}
       {/if}
     {/each}
   </div>

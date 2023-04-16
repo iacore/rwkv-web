@@ -7,9 +7,9 @@ dependencies:
   '@neodrag/svelte':
     specifier: ^2.0.3
     version: 2.0.3
-  god-tier-serializer:
-    specifier: ^1.1.0
-    version: 1.1.0
+  nanoid:
+    specifier: ^4.0.2
+    version: 4.0.2
   object-inspect:
     specifier: ^1.12.3
     version: 1.12.3
@@ -615,10 +615,6 @@ packages:
       path-is-absolute: 1.0.1
     dev: true
 
-  /god-tier-serializer@1.1.0:
-    resolution: {integrity: sha512-iF5/mRS5jSQocAwYBK1H4gdkPkXePKiaHpVEdTLb874EbNWDt0Sxmtt61alzT9Wfr85i5zLPZO/FLZQfJ4ZPGg==}
-    dev: false
-
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
     dev: true
@@ -772,6 +768,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /nanoid@4.0.2:
+    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /node-releases@2.0.10:
     resolution: {integrity: sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==}

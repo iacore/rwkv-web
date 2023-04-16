@@ -1,4 +1,5 @@
 export type BaseNodeState = {
+  id: string
   x: number
   y: number
   stacking: number
@@ -8,7 +9,7 @@ export type NodeState_Infer = {
   type: "infer"
   state: Uint8Array | null,
   prompt: string,
-  tokens: number[],
+  tokens: Uint32Array,
 } & BaseNodeState
 
 export type NodeState_Result = {

@@ -41,5 +41,9 @@ export function promiseStateFancyString(s: PromiseState): string {
 
 export function inspect(a: any): string {
   if ('message' in a) return a.message.toString()
-  return a.toString()
+  try {
+    return JSON.stringify(a)
+  } catch {
+    return a.toString()
+  }
 }

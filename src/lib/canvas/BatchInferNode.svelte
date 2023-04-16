@@ -1,8 +1,10 @@
 <script lang="ts" context="module">
+import { nanoid } from "nanoid"
+
 export const extraInit = {
   state: null,
   prompt: "",
-  tokens: [],
+  tokens: new Uint32Array(),
 }
 </script>
 
@@ -15,15 +17,14 @@ import type { NodeState_Infer } from "./mod"
 export let data: NodeState_Infer
 
 const onInput = (ev) => {
-  console.log(ev)
   data.prompt = ev.target.value
-  if (data.prompt == "") data.tokens = []
+  if (data.prompt == "") data.tokens = new Uint32Array()
   else {
     let tok = $store_tokenizer
     if (tok) {
       async function tokenize_go() {
-        data.tokens = Array.from(await tok!.encode(data.prompt, true))
-        state_nodes.save()
+        data.tokens = await tok!.encode(data.prompt, true)
+        // state_nodes.save()
       }
 
       tokenize_go()
@@ -38,6 +39,7 @@ async function submit() {
   const { logits, state } = await server.postInfer(data.tokens, data.state)
   state_nodes.update((o) => {
     o.items.push({
+      id: nanoid(),
       type: "result",
       x: data.x + 340,
       y: data.y,
@@ -62,7 +64,7 @@ async function submit() {
   </svelte:fragment>
   <svelte:fragment slot="actions">
     <button class="btn-inline" on:click="{submit}" disabled="{!can_submit}"
-      >Submit</button
+      >Go▶</button
     >
   </svelte:fragment>
 </ExNode>

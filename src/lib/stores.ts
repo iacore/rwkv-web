@@ -1,5 +1,6 @@
-import { serialize, deserialize } from "god-tier-serializer"
 import { get, writable, type Writable } from "svelte/store"
+import { nanoid } from "nanoid"
+
 import type { RWKVClient } from "./api"
 import type { TokenizerHandle } from "./tokenizers/shim"
 import type { NodeState } from "./canvas/mod"
@@ -13,7 +14,7 @@ export const store_top_p = writable(0.85)
 
 export type Resetable<T> = Writable<T> & { reset(): void; save(): void }
 
-export function stored<T>(key: string, init: () => T): Resetable<T> {
+export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
   const stored = localStorage.getItem(key)
 
   const content = writable(
@@ -21,23 +22,62 @@ export function stored<T>(key: string, init: () => T): Resetable<T> {
       ? init()
       : (() => {
           try {
-            return deserialize(stored)
+            return JSON.parse(stored)
           } catch {
             return init()
           }
         })()
   ) as Resetable<T>
-  function save(value: T) {
-    return localStorage.setItem(key, serialize(value))
-  }
 
-  content.subscribe((value) => save(value))
+  function save(value: T) {
+    return localStorage.setItem(key, JSON.stringify(value))
+  }
   content.save = function () {
     save(get(this))
   }
   content.reset = function () {
     this.set(init())
   }
+
+  window.addEventListener("beforeunload", () => {
+    content.save()
+  })
+
+  return content
+}
+
+export function storedComplex<T>(key: string, init: () => T): Resetable<T> {
+  const stored = localStorage.getItem(key)
+
+  const content = writable(
+    stored === null
+      ? init()
+      : (() => {
+          try {
+            return JSON.parse(stored)
+          } catch {
+            return init()
+          }
+        })()
+  ) as Resetable<T>
+
+  function save(value: T) {
+    // JSON.stringify()
+    // localStorage.setItem()
+    // todo: do this faster
+    // return localStorage.setItem(key, JSON.stringify(value))
+  }
+  content.save = function () {
+    save(get(this))
+  }
+  content.reset = function () {
+    this.set(init())
+  }
+
+  window.addEventListener("beforeunload", () => {
+    content.save()
+  })
+
   return content
 }
 
@@ -46,29 +86,31 @@ export function resetState() {
   state_nodes.reset()
 }
 
-export const state_canvas = stored("state.canvas", () => ({ x: 0, y: 0 }))
+export const state_canvas = storedSimple("state.canvas", () => ({ x: 0, y: 0 }))
 
 export type State_Nodes = {
   items: NodeState[]
 }
-export const state_nodes = stored(
+export const state_nodes = storedComplex(
   "state.nodes",
   (): State_Nodes => ({
     items: [
       {
+        id: nanoid(),
         type: "infer",
         x: 100,
         y: 40,
         stacking: 0,
-        ...extraInit_Infer
+        ...extraInit_Infer,
       },
       {
         // for dev
+        id: nanoid(),
         type: "infer",
         x: 100,
         y: 340,
         stacking: 0,
-        ...extraInit_Infer
+        ...extraInit_Infer,
       },
       // {
       //   type: "result",

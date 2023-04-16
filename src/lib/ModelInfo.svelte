@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { ModelInfo } from "./server"
+import type { ModelInfo } from "./api"
 
 export let data: ModelInfo | undefined
 

@@ -6,7 +6,7 @@ import { state_nodes } from "../stores"
 import type { BaseNodeState } from "./mod"
 
 export let title = "(untitled)"
-export let data: BaseNodeState = { x: 100, y: 100, stacking: 0 }
+export let data: BaseNodeState
 
 let el: HTMLElement | undefined
 let dragcancel: HTMLElement[] = []
@@ -15,6 +15,7 @@ $: {
   if (el) {
     dragcancel.push(...el.querySelectorAll('input'))
     dragcancel.push(...el.querySelectorAll('textarea'))
+    dragcancel.push(...el.querySelectorAll('select'))
   }
 }
 
@@ -26,7 +27,7 @@ function onDragStart(detail) {
 function onDrag(detail) {
   data.x = detail.offsetX
   data.y = detail.offsetY
-  state_nodes.save()
+  // state_nodes.save()
 }
 </script>
 
