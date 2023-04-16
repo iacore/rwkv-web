@@ -34,6 +34,8 @@ const MARQUEE_TEXT = "Model Info Not Available"
 {/if}
 
 <style>
+/* marquee effect modified from https://tympanus.net/codrops/2020/03/31/css-only-marquee-effect/ */
+
 .marquee {
   position: relative;
   overflow: hidden;
