@@ -1,6 +1,7 @@
 import { encode as msgEncode, decode as msgDecode } from "@msgpack/msgpack"
 
 export type ModelInfo = {
+  model_hash: string
   model_path: string
   vocab_count: number
   state_count: number

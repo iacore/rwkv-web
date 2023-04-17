@@ -43,7 +43,7 @@ async function decode(tok: TokenizerHandle, x: number): Promise<string> {
 
 <style lang="postcss">
 button {
-  @apply text-start relative truncate -mr-[1px] border-y border-l bg-background;
+  @apply text-start relative truncate -mr-[2px] border-y border-l bg-background;
   
   &:hover {
     @apply overflow-auto z-10 text-text;
