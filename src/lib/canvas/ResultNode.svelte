@@ -2,7 +2,7 @@
 import { getClient, state_nodes, store_tokenizer } from "../stores"
 import ExNode from "./ExNode.svelte"
 import LogitViz from "./LogitViz.svelte"
-import { spawnToRight, type NodeState_Result } from "./state"
+import { spawn, spawnToRight, type NodeState_Result } from "./state"
 import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Result
@@ -70,11 +70,11 @@ async function forceNext(next: number | null) {
       logits: data.logits,
     })}>Analysis</button> -->
     <button class="btn-inline" on:click={() => forceNext(data.next)} disabled={data.next == null}><abbr title="Force next token">Force</abbr></button>
-    <button class="btn-inline" on:click={() => spawnToRight(data, {
+    <button class="btn-inline" on:click={() => spawn(data, {x: 0, y: (data.el_height ?? 128) +16}, {
       type: "infer",
       state: data.state,
       prompt: "",
-    })}>Batch▶</button>
+    })}>Batch▼</button>
     <button class="btn-inline" on:click={() => spawnToRight(data, {
       type: "stream",
       logits: data.logits,

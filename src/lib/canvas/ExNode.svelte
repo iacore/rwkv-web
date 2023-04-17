@@ -14,6 +14,9 @@ let dragcancel: HTMLElement[] = []
 
 $: {
   if (el) {
+    const rect = el.getBoundingClientRect()
+    data.el_width  = rect.width
+    data.el_height = rect.height
     dragcancel.push(...el.querySelectorAll("input"))
     dragcancel.push(...el.querySelectorAll("textarea"))
     dragcancel.push(...el.querySelectorAll("select"))
