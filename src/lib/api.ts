@@ -1,5 +1,6 @@
 import { encode as msgEncode, decode as msgDecode } from "@msgpack/msgpack"
 import * as cache from "./cache"
+import { assert } from "chai"
 
 export type ModelHash = string
 
@@ -60,7 +61,7 @@ export class RWKVClient {
     }
   }
 
-  async inferFromZero(tokens_: Uint32List) {
+  async inferFromZero(tokens_: Uint32List, noRequest = false): Promise<cache.InferCacheRow> {
     const model = this.info.model_hash
     const tokens = new Uint32Array(tokens_)
     const cached = await cache.getBestMatch(model, tokens)
@@ -69,26 +70,31 @@ export class RWKVClient {
       if (cached.tokens.length == tokens.length) return cached
 
       // otherwise, infer from last cached
+      assert(!noRequest, "no cache. no request allowed")
       const result = await this.postInfer(
         tokens.slice(cached.tokens.length),
         cached.state
       )
-      await cache.add({
+      const row = {
         model,
         tokens,
         state: result.state,
         logits: result.logits,
-      })
-      return result
+      }
+      await cache.add(row)
+      return row
     } else {
+      // no cache at all
+      assert(!noRequest, "no cache. no request allowed")
       const result = await this.postInfer(tokens, null)
-      await cache.add({
+      const row = {
         model,
         tokens,
         state: result.state,
         logits: result.logits,
-      })
-      return result
+      }
+      await cache.add(row)
+      return row
     }
   }
 }

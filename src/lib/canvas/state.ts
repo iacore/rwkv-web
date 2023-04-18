@@ -10,32 +10,37 @@ export type BaseNodeState = {
   el_height?: number
 }
 
-export type NodeState_Infer = {
+export type Base_Infer = {
   type: "infer"
   seen_tokens: number[]
-  prompt: string,
-} & BaseNodeState
+  prompt: string
+}
+export type NodeState_Infer = Base_Infer & BaseNodeState
 
-export type NodeState_Result = {
+export type Base_Result = {
   type: "result"
   seen_tokens: number[]
-  next: number | null,
-} & BaseNodeState
+  next: number | null
+}
+export type NodeState_Result = Base_Result & BaseNodeState
 
-export type NodeState_Analysis = {
+export type Base_Analysis = {
   type: "analysis"
-  logits: Float32Array,
-} & BaseNodeState
+  logits: Float32Array
+}
+export type NodeState_Analysis = Base_Analysis & BaseNodeState
 
-export type NodeState_Stream = {
+export type Base_Stream = {
   type: "stream"
   seen_tokens: number[]
-} & BaseNodeState
+}
+export type NodeState_Stream = Base_Stream & BaseNodeState
 
+export type Base = Base_Infer | Base_Result | Base_Analysis | Base_Stream
 export type NodeState = NodeState_Infer | NodeState_Result | NodeState_Analysis | NodeState_Stream
 
 
-export function spawn<T>(data: BaseNodeState, offset: {x: number, y: number}, extra: Partial<NodeState> /* todo: type this properly */) {
+export function spawn<T extends Base>(data: BaseNodeState, offset: {x: number, y: number}, extra: T /* todo: type this properly */) {
   state_nodes.update((o) => {
     o.items.push({
       x: data.x + offset.x,
@@ -48,6 +53,6 @@ export function spawn<T>(data: BaseNodeState, offset: {x: number, y: number}, ex
   })
 }
 
-export function spawnToRight<T>(data: BaseNodeState, extra: Partial<NodeState> /* todo: type this properly */) {
+export function spawnToRight<T extends Base>(data: BaseNodeState, extra: T /* todo: type this properly */) {
   return spawn(data, { x: (data.el_width ?? 324) + 16, y: 0 }, extra)
 }

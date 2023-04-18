@@ -43,6 +43,9 @@ def infer_from_zero : ModelWeights S -> List Token -> HiddenState S
 
 ## TODO
 
+not sure whether full auto or manual request is good
+
+- add tokenizer and client as svelte Context (Promise<T>)
 - cache invalidation
 - write about rwkvd
 - use consistent wording
