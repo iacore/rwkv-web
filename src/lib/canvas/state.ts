@@ -12,14 +12,13 @@ export type BaseNodeState = {
 
 export type NodeState_Infer = {
   type: "infer"
-  state: Uint8Array | null,
+  seen_tokens: number[]
   prompt: string,
 } & BaseNodeState
 
 export type NodeState_Result = {
   type: "result"
-  state: Uint8Array,
-  logits: Float32Array,
+  seen_tokens: number[]
   next: number | null,
 } & BaseNodeState
 
@@ -30,8 +29,7 @@ export type NodeState_Analysis = {
 
 export type NodeState_Stream = {
   type: "stream"
-  state: Uint8Array,
-  logits: Float32Array,
+  seen_tokens: number[]
 } & BaseNodeState
 
 export type NodeState = NodeState_Infer | NodeState_Result | NodeState_Analysis | NodeState_Stream

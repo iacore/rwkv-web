@@ -1,3 +1,5 @@
+import { assert } from "chai"
+
 export type TokenChoice = {
   /** token id */
   i: number
@@ -58,5 +60,5 @@ export function random_choice(sorted: TokenChoice[]): number {
     cum += p
     if (cum > threshold) return token_id
   }
-  throw new Error("impossible")
+  assert.fail("impossible")
 }

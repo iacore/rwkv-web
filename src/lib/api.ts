@@ -1,7 +1,10 @@
 import { encode as msgEncode, decode as msgDecode } from "@msgpack/msgpack"
+import * as cache from "./cache"
+
+export type ModelHash = string
 
 export type ModelInfo = {
-  model_hash: string
+  model_hash: ModelHash
   model_path: string
   vocab_count: number
   state_count: number
@@ -14,14 +17,14 @@ export type InferResponse = {
 
 export class RWKVClient {
   static async load(base: URL | string): Promise<RWKVClient> {
-    const client = new RWKVClient(new URL(base), undefined)
+    const client = new RWKVClient(new URL(base), undefined!)
     const model_info = await client.getModelInfo()
     client.info = model_info
     return client
   }
 
   base: URL
-  info: ModelInfo
+  info!: ModelInfo
 
   constructor(base: URL, info: ModelInfo) {
     this.base = base
@@ -35,12 +38,12 @@ export class RWKVClient {
   }
 
   async postInfer(
-    tokens: Uint32Array | number[],
+    tokens: Uint32List,
     state: Uint8Array | null
   ): Promise<InferResponse> {
     const res = await fetch(new URL("/infer", this.base), {
       method: "POST",
-      body: msgEncode({ tokens, state }),
+      body: msgEncode({ tokens: Array.from(tokens), state }),
     })
 
     const data = msgDecode(await res.arrayBuffer()) as {
@@ -54,6 +57,38 @@ export class RWKVClient {
     return {
       logits: logits,
       state: data.state,
+    }
+  }
+
+  async inferFromZero(tokens_: Uint32List) {
+    const model = this.info.model_hash
+    const tokens = new Uint32Array(tokens_)
+    const cached = await cache.getBestMatch(model, tokens)
+    if (cached != undefined) {
+      // exact match
+      if (cached.tokens.length == tokens.length) return cached
+
+      // otherwise, infer from last cached
+      const result = await this.postInfer(
+        tokens.slice(cached.tokens.length),
+        cached.state
+      )
+      await cache.add({
+        model,
+        tokens,
+        state: result.state,
+        logits: result.logits,
+      })
+      return result
+    } else {
+      const result = await this.postInfer(tokens, null)
+      await cache.add({
+        model,
+        tokens,
+        state: result.state,
+        logits: result.logits,
+      })
+      return result
     }
   }
 }

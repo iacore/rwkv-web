@@ -43,9 +43,8 @@ def infer_from_zero : ModelWeights S -> List Token -> HiddenState S
 
 ## TODO
 
-- cache last 16 states/logits
-    facet by `n_vocab`, `n_state`, `seen_tokens`, also `model_path` as caution
-    - resume from them
+- cache invalidation
+- write about rwkvd
 - use consistent wording
 
 good to have

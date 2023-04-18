@@ -53,13 +53,6 @@ $: {
     console.error($srv_error)
   }
 }
-
-onMount(() => {})
-// import Counter from './lib/Counter.svelte'
-
-function setContext(arg0: string, srv_data: any) {
-  throw new Error("Function not implemented.")
-}
 </script>
 
 <div id="app-root">
