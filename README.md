@@ -15,6 +15,8 @@ RWKV is easy to model as pure functions. Therefore, it's easy reconstruct the st
 
 For explanation of RWKV itself, see [How the RWKV language model works](https://johanwind.github.io/2023/03/23/rwkv_details.html) and [numpy implementation](https://github.com/iacore/rwkv-np) (used in server of this project).
 
+High level representation of RWKV API is presented below.
+
 ```lean
 -- pseudo-code for RWKV inference
 
