@@ -75,7 +75,7 @@ function close() {
 <style lang="postcss">
 .node {
   position: absolute;
-  outline: solid 1px white;
+  outline: solid 1px var(--color-text);
   background-color: var(--color-background);
 }
 .content {

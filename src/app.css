@@ -12,6 +12,12 @@
     --color-background: white;
   }
 
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-text);
+  }
+
   @media (prefers-color-scheme: dark) {
     :root {
       --color-hl-frag: 221 167 31;

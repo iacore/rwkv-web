@@ -74,7 +74,7 @@ function setContext(arg0: string, srv_data: any) {
           on:click="{() => retry(server)}">↻</button
         ></span
       >
-      <input type="text" bind:value="{server}" />
+      <label><span class="sr-only">Server Address</span><input type="text" bind:value="{server}" /></label>
     </div>
   </header>
   <hr />

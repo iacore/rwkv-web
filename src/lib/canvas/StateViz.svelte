@@ -16,6 +16,6 @@ export let data: Uint8Array | null
 
 <style>
 	span {
-		@apply bg-white w-[1px];
+		@apply bg-text w-[1px];
 	}
 </style>
