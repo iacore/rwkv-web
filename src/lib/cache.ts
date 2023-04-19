@@ -42,6 +42,7 @@ const schema = z.object({
     .and(z.custom((data: Uint32Array) => data.length > 0)),
   state: z.instanceof(Uint8Array),
   logits: z.instanceof(Float32Array),
+  date: z.date(),
 })
 
 export type InferCacheRow = z.infer<typeof schema>
