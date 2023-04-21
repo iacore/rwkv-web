@@ -24,7 +24,48 @@ export const getTokenizer = () => {
   return tok_p
 }
 
+// networking-related
 export const store_client: Writable<RWKVClient | undefined> = writable()
+export const getClient = createStoreGetter(store_client)
+
+// global params
+export const store_temperature = storedSimple("params.temperature", () => 1.0)
+export const store_top_p = storedSimple("params.top_p", () => 0.85)
+
+// ui state
+export const state_canvas = storedSimple("ui.canvas", () => ({ x: 0, y: 0 }))
+export type UiState_Nodes = {
+  items: NodeState[]
+}
+export const state_nodes = storedComplex(
+  "ui.nodes",
+  (): UiState_Nodes => ({
+    items: [
+      {
+        id: nanoid(),
+        type: "infer",
+        x: 100,
+        y: 40,
+        stacking: 0,
+        ...extraInit_Infer,
+      },
+    ],
+  }),
+  {
+    items: [],
+  }
+)
+
+// other api
+
+/** reset cache and ui state */
+export async function resetState() {
+  localStorage.clear()
+  await Promise.all([cache.reset(), localForage.clear()])
+  location.reload()
+}
+
+// util functions
 
 function createStoreGetter<T>(store: Readable<T>) {
   return function (): Promise<NonNullable<T>> {
@@ -44,14 +85,9 @@ function createStoreGetter<T>(store: Readable<T>) {
   }
 }
 
-export const getClient = createStoreGetter(store_client)
-
-export const store_temperature = writable(1.0)
-export const store_top_p = writable(0.85)
-
 export type Resetable<T> = Writable<T> & { reset(): void; save(): void }
 
-export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
+function storedSimple<T>(key: string, init: () => T): Resetable<T> {
   const stored = localStorage.getItem(key)
 
   const content = writable(
@@ -89,7 +125,7 @@ export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
   return content
 }
 
-export function storedComplex<T>(
+function storedComplex<T>(
   key: string,
   init: () => T,
   stub: T
@@ -128,33 +164,3 @@ export function storedComplex<T>(
 
   return content
 }
-
-export function resetState() {
-  cache.reset()
-  state_canvas.reset()
-  state_nodes.reset()
-}
-
-export const state_canvas = storedSimple("state.canvas", () => ({ x: 0, y: 0 }))
-
-export type State_Nodes = {
-  items: NodeState[]
-}
-export const state_nodes = storedComplex(
-  "state.nodes",
-  (): State_Nodes => ({
-    items: [
-      {
-        id: nanoid(),
-        type: "infer",
-        x: 100,
-        y: 40,
-        stacking: 0,
-        ...extraInit_Infer,
-      },
-    ],
-  }),
-  {
-    items: [],
-  }
-)
