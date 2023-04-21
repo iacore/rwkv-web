@@ -1,7 +1,5 @@
 <script lang="ts" context="module">
-import { nanoid } from "nanoid"
 import { onMount } from "svelte"
-import { get } from "svelte/store"
 
 export const extraInit = {
   seen_tokens: [],
@@ -10,15 +8,10 @@ export const extraInit = {
 </script>
 
 <script lang="ts">
-import {
-  getClient,
-  getTokenizer,
-  store_client,
-  store_tokenizer,
-} from "../stores"
+import { getClient, getTokenizer, state_nodes, store_client } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
-import { spawnToRight, type Base_Result, type NodeState_Infer } from "./state"
+import { spawnToRight, type Base_Result, type NodeState_Infer } from "./types"
 import StateViz from "./StateViz.svelte"
 import TokenViz from "./TokenViz.svelte"
 
@@ -28,29 +21,24 @@ let tokens_set = false
 let tokens: number[] = []
 
 onMount(async () => {
-  const tok = await getTokenizer()
   tokens_set = true
-  update(tok)
+  await update()
 })
 
-function update(tok: TokenizerHandle | undefined) {
+async function update() {
   if (data.prompt == "") tokens = []
   else {
-    if (tok) {
-      async function tokenize_go() {
-        tokens = Array.from(await tok!.encode(data.prompt, true))
-      }
-
-      tokenize_go()
-    }
+    const tok = await getTokenizer()
+    tokens = Array.from(await tok.encode(data.prompt, true))
   }
+  state_nodes.save()
 }
 
 $: can_submit = $store_client && tokens.length != 0
 
 async function submit() {
   const client = await getClient()
-  const allTokens = [...data.seen_tokens,...tokens];
+  const allTokens = [...data.seen_tokens, ...tokens]
   await client.inferFromZero(allTokens)
 
   spawnToRight<Base_Result>(data, {
@@ -64,10 +52,8 @@ async function submit() {
 <ExNode title="Batch Inference" data="{data}">
   <svelte:fragment slot="content">
     <label
-      >prompt <textarea
-        rows="6"
-        bind:value="{data.prompt}"
-        on:input="{() => update($store_tokenizer)}"></textarea></label
+      >prompt <textarea rows="6" bind:value="{data.prompt}" on:input="{update}"
+      ></textarea></label
     >
     <span
       >tokens {#if tokens_set}<TokenViz data="{tokens}" />{:else}<span>⧗</span

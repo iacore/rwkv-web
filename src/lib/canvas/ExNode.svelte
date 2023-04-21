@@ -3,7 +3,7 @@
 import { draggable } from "@neodrag/svelte"
 import { get } from "svelte/store"
 import { state_nodes } from "../stores"
-import type { BaseNodeState } from "./state"
+import type { BaseNodeState } from "./types"
 
 export let title = "(untitled)"
 export let data: BaseNodeState

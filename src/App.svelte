@@ -5,13 +5,12 @@ import { RWKVClient } from "./lib/api"
 import Canvas from "./lib/Canvas.svelte"
 import LoadStatus from "./lib/LoadStatus.svelte"
 import ModelInfo from "./lib/ModelInfo.svelte"
-import { store_client, store_tokenizer } from "./lib/stores"
-import { load as loadTokenizer, TokenizerHandle } from "./lib/tokenizers/shim"
+import { store_client, getTokenizer } from "./lib/stores"
+import { load as loadTokenizer } from "./lib/tokenizers/shim"
 import TopLevel from "./lib/TopLevel.svelte"
 import {
   inspect,
   type PromiseState,
-  promiseStateFancyString,
   promiseToStore,
 } from "./lib/util"
 
@@ -22,7 +21,7 @@ let tok_state = writable<PromiseState>("pending"),
 
 onMount(async () => {
   try {
-    store_tokenizer.set(await loadTokenizer())
+    await getTokenizer()
     tok_state.set("fulfilled")
   } catch (e) {
     tok_state.set("rejected")

@@ -1,12 +1,19 @@
 <script lang="ts">
-import { getClient, state_nodes, store_tokenizer } from "../stores"
+import {
+  getClient,
+  getTokenizer,
+} from "../stores"
 import ExNode from "./ExNode.svelte"
 import LogitViz from "./LogitViz.svelte"
-import { spawn, spawnToDown, spawnToRight, type NodeState_Result } from "./state"
+import {
+  spawn,
+  spawnToDown,
+  spawnToRight,
+  type NodeState_Result,
+} from "./types"
 import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Result
-
 
 let state: Uint8Array | undefined = undefined
 let logits: Float32Array | undefined = undefined
@@ -20,20 +27,16 @@ $: (async (seen_tokens) => {
   }
 })(data.seen_tokens)
 
-
 let word: string | null = null
 
-const update = (tok, token_id) => {
-  if (tok) {
-    tok.decode([token_id], true).then((decoded) => {
-      word = decoded
-    })
-  }
+const update = async (token_id) => {
+  const tok = await getTokenizer()
+  word = await tok.decode([token_id], true)
 }
 
 $: {
   if (data.next != null) {
-    update($store_tokenizer, data.next)
+    update(data.next)
   } else {
     word = null
   }
@@ -86,14 +89,11 @@ async function forceNext(next: number | null) {
     <button
       class="btn-inline"
       on:click="{() =>
-        spawnToDown(
-          data,
-          {
-            type: 'infer',
-            seen_tokens: data.seen_tokens,
-            prompt: '',
-          }
-        )}">Batch▼</button
+        spawnToDown(data, {
+          type: 'infer',
+          seen_tokens: data.seen_tokens,
+          prompt: '',
+        })}">Batch▼</button
     >
     <button
       class="btn-inline"

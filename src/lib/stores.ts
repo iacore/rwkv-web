@@ -3,20 +3,28 @@ import { nanoid } from "nanoid"
 import { debounce } from "lodash"
 import { createInstance as createLocalForage, INDEXEDDB } from "localforage"
 
+import * as cache from "./cache"
 import type { RWKVClient } from "./api"
-import type { TokenizerHandle } from "./tokenizers/shim"
-import type { NodeState } from "./canvas/state"
+import { type TokenizerHandle, load as loadTokenizer } from "./tokenizers/shim"
+import type { NodeState } from "./canvas/types"
 import { extraInit as extraInit_Infer } from "./canvas/BatchInferNode.svelte"
 
+// setup
 const localForage = createLocalForage({
   driver: INDEXEDDB,
   name: "rwkvd-localforage",
   version: 1,
-  storeName: "ui"
+  storeName: "ui",
 })
 
+// tokenizer
+let tok_p: Promise<TokenizerHandle>
+export const getTokenizer = () => {
+  if (!tok_p) tok_p = loadTokenizer()
+  return tok_p
+}
+
 export const store_client: Writable<RWKVClient | undefined> = writable()
-export const store_tokenizer: Writable<TokenizerHandle | undefined> = writable()
 
 function createStoreGetter<T>(store: Readable<T>) {
   return function (): Promise<NonNullable<T>> {
@@ -36,7 +44,6 @@ function createStoreGetter<T>(store: Readable<T>) {
   }
 }
 
-export const getTokenizer = createStoreGetter(store_tokenizer)
 export const getClient = createStoreGetter(store_client)
 
 export const store_temperature = writable(1.0)
@@ -91,12 +98,12 @@ export function storedComplex<T>(
   const storedPromise = localForage.getItem<T>(key)
 
   const save = debounce(async (value: T) => {
-    console.debug("save")
+    console.debug("saved: " + key)
     await localForage.setItem(key, value)
   }, 1000)
 
   content.save = function () {
-    console.debug("save triggered")
+    console.debug("save triggered: " + key)
     save(get(this))
   }
   content.reset = function () {
@@ -121,8 +128,6 @@ export function storedComplex<T>(
 
   return content
 }
-
-import * as cache from "./cache"
 
 export function resetState() {
   cache.reset()

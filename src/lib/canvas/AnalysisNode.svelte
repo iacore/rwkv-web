@@ -1,9 +1,6 @@
 <script lang="ts">
-import { state_nodes, store_client, store_tokenizer } from "../stores"
-import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
-import type { NodeState_Analysis } from "./state"
-import StateViz from "./StateViz.svelte"
+import type { NodeState_Analysis } from "./types"
 
 export let data: NodeState_Analysis
 </script>

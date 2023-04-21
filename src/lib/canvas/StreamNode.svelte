@@ -5,14 +5,13 @@ import type { RWKVClient } from "../api"
 import { preselect, random_choice } from "../math"
 import {
   getClient,
+  getTokenizer,
   state_nodes,
-  store_client,
-  store_tokenizer,
 } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
 import LogitViz from "./LogitViz.svelte"
-import type { NodeState_Stream } from "./state"
+import type { NodeState_Stream } from "./types"
 import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Stream
@@ -37,8 +36,9 @@ onDestroy(() => {
 
 onMount(() => {
   async function go() {
+    const tokenizer = await getTokenizer()
     {
-      const text = await $store_tokenizer!.decode(data.seen_tokens, true)
+      const text = await tokenizer.decode(data.seen_tokens, true)
       accumulated = text
     }
     const client = await getClient()
@@ -49,7 +49,7 @@ onMount(() => {
         const res = await nextToken(client, logits)
         logits = res.logits
         state_nodes.save()
-        const text = await $store_tokenizer!.decode(data.seen_tokens, true)
+        const text = await tokenizer.decode(data.seen_tokens, true)
         accumulated = text
       } else {
         await new Promise((res) => requestAnimationFrame(res))

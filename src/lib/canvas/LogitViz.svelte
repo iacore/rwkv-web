@@ -5,7 +5,6 @@ import PromiseString from "../PromiseString.svelte"
 import {
   getTokenizer,
   store_temperature,
-  store_tokenizer,
   store_top_p,
 } from "../stores"
 import type { TokenizerHandle } from "../tokenizers/shim"
