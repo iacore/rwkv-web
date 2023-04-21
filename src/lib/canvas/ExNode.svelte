@@ -1,7 +1,7 @@
 <script lang="ts">
 //! ignore the funny class name, this is the base node
 
-import { draggable } from "@neodrag/svelte"
+import { type DragEventData, draggable } from "@neodrag/svelte"
 import { state_nodes } from "../stores"
 import { type BaseNodeState, createMaxStacking } from "./types"
 
@@ -23,11 +23,11 @@ $: {
   }
 }
 
-function onDragStart(_detail) {
+function onDragStart(_detail: DragEventData) {
   data.stacking = createMaxStacking() + 1
 }
 
-function onDrag(detail) {
+function onDrag(detail: DragEventData) {
   data.x = detail.offsetX
   data.y = detail.offsetY
   state_nodes.save()

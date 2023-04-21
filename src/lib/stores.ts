@@ -52,6 +52,41 @@ export const state_nodes = storedComplex(
     items: [],
   }
 )
+export type UiState_Nodes = {
+  items: NodeState[]
+}
+
+export const indicators = writable<Indicator[]>([]) // this one is not saved
+export type Indicator = {
+  id: string,
+  x: number,
+  y: number,
+  p: Promise<any>,
+  error: Error | any | null,
+}
+export function addIndicator(p: Promise<any>, pos: {x: number, y: number}) {
+  const obj = {
+    ...pos,
+    id: nanoid(),
+    p,
+    error: null,
+  }
+  indicators.update(list => [obj, ...list])
+  p.then(() => {
+    indicators.update(list => list.filter(o => o.id != obj.id))
+  })
+  p.catch((e) => {
+    obj.error = e
+  })
+}
+
+export function addIndicatorMouse(p: Promise<any>, evt: MouseEvent) {
+  const canvas_pos = get(state_canvas)
+  addIndicator(p, {
+    x: evt.offsetX - canvas_pos.x,
+    y: evt.offsetY - canvas_pos.y,
+  })
+}
 
 // other api
 
