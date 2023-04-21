@@ -26,10 +26,6 @@ async function nextToken(client: RWKVClient, logits: Float32Array) {
   const token_id = random_choice(choices)
   data.seen_tokens.push(token_id)
 
-  // there is some race condition issue here with saved state and what not
-  const text = await $store_tokenizer!.decode(data.seen_tokens, true)
-  accumulated = text
-
   return await client.inferFromZero(data.seen_tokens)
 }
 
@@ -41,6 +37,10 @@ onDestroy(() => {
 
 onMount(() => {
   async function go() {
+    {
+      const text = await $store_tokenizer!.decode(data.seen_tokens, true)
+      accumulated = text
+    }
     const client = await getClient()
     let logits = (await client.getCached(data.seen_tokens))?.logits
     while (!stop) {
@@ -49,6 +49,8 @@ onMount(() => {
         const res = await nextToken(client, logits)
         logits = res.logits
         state_nodes.save()
+        const text = await $store_tokenizer!.decode(data.seen_tokens, true)
+        accumulated = text
       } else {
         await new Promise((res) => requestAnimationFrame(res))
       }
