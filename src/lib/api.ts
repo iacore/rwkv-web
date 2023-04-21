@@ -63,7 +63,7 @@ export class RWKVClient {
 
   async inferFromZero(tokens_: Uint32List, noRequest = false): Promise<cache.InferCacheRow> {
     const model = this.info.model_hash
-    const tokens = new Uint32Array(tokens_)
+    const tokens = Array.from(tokens_)
     const cached = await cache.getBestMatch(model, Array.from(tokens))
     if (cached != undefined) {
       // exact match
@@ -80,6 +80,7 @@ export class RWKVClient {
         tokens,
         state: result.state,
         logits: result.logits,
+        date: new Date(),
       }
       await cache.add(row)
       return row
@@ -92,6 +93,7 @@ export class RWKVClient {
         tokens,
         state: result.state,
         logits: result.logits,
+        date: new Date(),
       }
       await cache.add(row)
       return row

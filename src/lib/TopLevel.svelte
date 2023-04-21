@@ -66,7 +66,7 @@ function newInfer() {
   >
 </div>
 
-<style>
+<style lang="postcss">
 .sampler-params-label {
   @apply isolate text-center leading-none text-[1em] inline-block px-1 h-[1.5em] mt-[-3px];
   transform-origin: top;

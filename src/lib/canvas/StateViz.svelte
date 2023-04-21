@@ -14,7 +14,7 @@ export let data: Uint8Array | null
 	</abbr>
 {/if}
 
-<style>
+<style lang="postcss">
 	span {
 		@apply bg-text w-[1px];
 	}

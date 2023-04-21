@@ -13,6 +13,8 @@ export const store_tokenizer: Writable<TokenizerHandle | undefined> = writable()
 
 function createStoreGetter<T>(store: Readable<T>) {
   return function (): Promise<NonNullable<T>> {
+    const current = get(store)
+    if (current != undefined) return Promise.resolve(current)
     return new Promise((res) => {
       let unsubscribe
       unsubscribe = store.subscribe((value) => {
