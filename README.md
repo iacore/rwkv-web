@@ -47,8 +47,9 @@ def infer_from_zero : ModelWeights S -> List Token -> HiddenState S
 
 ## TODO
 
-- write about rwkvd
 - add loading animation. spawn popup when waiting for server response
+  should be at rightmost of top/status bar
+- add saving animation ("stop inference to save")
 - add "retry request" button for all windows
 - show a list of cached prompts
 - cache invalidation

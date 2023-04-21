@@ -26,6 +26,7 @@ async function nextToken(client: RWKVClient, logits: Float32Array) {
   const token_id = random_choice(choices)
   data.seen_tokens.push(token_id)
 
+  // there is some race condition issue here with saved state and what not
   const text = await $store_tokenizer!.decode(data.seen_tokens, true)
   accumulated = text
 
