@@ -41,4 +41,3 @@ Model Info
 - wait for server (retry-able)
 - infer request (slow)
 - encode/decode (<100ms)
-

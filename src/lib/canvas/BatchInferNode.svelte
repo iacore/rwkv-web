@@ -9,7 +9,6 @@ export const extraInit = {
 
 <script lang="ts">
 import { getClient, getTokenizer, state_nodes, store_client } from "../stores"
-import type { TokenizerHandle } from "../tokenizers/shim"
 import ExNode from "./ExNode.svelte"
 import { spawnToRight, type Base_Result, type NodeState_Infer } from "./types"
 import StateViz from "./StateViz.svelte"

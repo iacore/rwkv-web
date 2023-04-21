@@ -3,7 +3,6 @@ import type { ModelInfo } from "./api"
 
 export let data: ModelInfo | undefined
 
-
 const MARQUEE_TEXT = "Model Info Not Available"
 </script>
 
