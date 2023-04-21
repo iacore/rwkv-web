@@ -1,3 +1,5 @@
+![screenshot](design/screenshot.png)
+
 Fancy RWKV client. [Preview](https://rwkv-web-01.surge.sh/) (may be out-of-date. Install this locally for best experience)
 
 This application requires [rwkv-flask](https://github.com/iacore/rwkv-flask) running as the server. Go to that repo for installation guide.
@@ -12,7 +14,8 @@ pnpm dev
 ## Tips
 
 - Infer request is cached.
-- Click Refresh when the server is loaded with a different model.
+- Refresh when the server is loaded with a different model.
+- The application is slightly janky. Refresh or Press "Reset" might solve some problems.
 
 ## Notes
 
