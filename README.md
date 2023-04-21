@@ -51,11 +51,6 @@ def infer_from_zero : ModelWeights S -> List Token -> HiddenState S
 
 ## TODO
 
-- clean up state management
-  - server connect
-  - server: model info
-  - server request
-
 - add loading animation. spawn popup when waiting for server response
   should be at rightmost of top/status bar
 - add saving animation ("stop inference to save")

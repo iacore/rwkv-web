@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid"
 import { state_nodes } from "../stores"
+import { get } from "svelte/store"
 
 export type BaseNodeState = {
   id: string
@@ -52,7 +53,7 @@ export function spawn<T extends Base>(
     o.items.push({
       x: data.x + offset.x,
       y: data.y + offset.y,
-      stacking: data.stacking + 1,
+      stacking: createMaxStacking() + 1,
       id: nanoid(),
       ...extra,
     })
@@ -72,4 +73,11 @@ export function spawnToDown<T extends Base>(
   extra: T /* todo: type this properly */
 ) {
   return spawn(data, { x: 0, y: (data.el_height ?? 128) + 16 }, extra)
+}
+
+export function createMaxStacking() {
+  return Math.max(
+    0,
+    ...get(state_nodes).items.map((o) => o.stacking--)
+  )
 }

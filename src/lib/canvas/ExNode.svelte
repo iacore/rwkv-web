@@ -1,9 +1,9 @@
 <script lang="ts">
-// ignore the funny name, this is the base node
+//! ignore the funny class name, this is the base node
+
 import { draggable } from "@neodrag/svelte"
-import { get } from "svelte/store"
 import { state_nodes } from "../stores"
-import type { BaseNodeState } from "./types"
+import { BaseNodeState, createMaxStacking } from "./types"
 
 export let title = "(untitled)"
 export let data: BaseNodeState
@@ -15,7 +15,7 @@ let dragcancel: HTMLElement[] = []
 $: {
   if (el) {
     const rect = el.getBoundingClientRect()
-    data.el_width  = rect.width
+    data.el_width = rect.width
     data.el_height = rect.height
     dragcancel.push(...el.querySelectorAll("input"))
     dragcancel.push(...el.querySelectorAll("textarea"))
@@ -23,12 +23,8 @@ $: {
   }
 }
 
-function onDragStart(detail) {
-  const maxStacking = Math.max(
-    -1,
-    ...get(state_nodes).items.map((o) => o.stacking--)
-  )
-  data.stacking = maxStacking + 1
+function onDragStart(_detail) {
+  data.stacking = createMaxStacking() + 1
 }
 
 function onDrag(detail) {
@@ -58,7 +54,9 @@ function close() {
   }}"
 >
   <div class=" justify-between">
-    <span class="title font-bold px-1">{#if wip}<span class="font-normal">[WIP] </span>{/if}{title}</span>
+    <span class="title font-bold px-1"
+      >{#if wip}<span class="font-normal">[WIP] </span>{/if}{title}</span
+    >
     <button
       class="btn-inline -mr-[1px] leading-none pb-0.5 float-right"
       on:click="{close}">x</button
