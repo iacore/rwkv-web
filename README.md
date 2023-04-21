@@ -9,6 +9,10 @@ pnpm i
 pnpm dev
 ```
 
+## Tips
+
+- Click Refresh when the server is loaded with a different model.
+
 ## Notes
 
 RWKV is easy to model as pure functions. Therefore, it's easy reconstruct the state from prompt. It's also possible to cache infer results in a radix tree/cactus stack. The tokens used so far is much smaller (in bytes) than model hidden state.
@@ -43,17 +47,16 @@ def infer_from_zero : ModelWeights S -> List Token -> HiddenState S
 
 ## TODO
 
-not sure whether full auto or manual request is good
-
-- add cache tests
-- fix all type errors
-- add tokenizer and client as svelte Context (Promise<T>)
-- cache invalidation
 - write about rwkvd
-- use consistent wording
+- add loading animation. spawn popup when waiting for server response
+- add "retry request" button for all windows
+- show a list of cached prompts
+- cache invalidation
+
 
 good to have
 
+- use consistent wording
 - scroll wheel zoom
 - scroll wheel scroll canvas
 - dynamic canvas background

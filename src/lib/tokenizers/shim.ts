@@ -55,10 +55,11 @@ export class TokenizerHandle {
   }
 }
 
+const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+  type: "module",
+})
+
 export const load: () => Promise<TokenizerHandle> = () => {
-  const worker = new Worker(new URL("./worker.ts", import.meta.url), {
-    type: "module",
-  })
   return new Promise((res, rej) => {
     worker.addEventListener("error", rej)
     worker.addEventListener("messageerror", rej)
@@ -71,5 +72,6 @@ export const load: () => Promise<TokenizerHandle> = () => {
         once: true,
       }
     )
+    worker.postMessage([-1, "ping"])
   })
 }

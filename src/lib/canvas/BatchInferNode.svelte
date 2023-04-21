@@ -4,7 +4,7 @@ import { onMount } from "svelte"
 import { get } from "svelte/store"
 
 export const extraInit = {
-  state: null,
+  seen_tokens: [],
   prompt: "",
 }
 </script>
@@ -13,7 +13,6 @@ export const extraInit = {
 import {
   getClient,
   getTokenizer,
-  state_nodes,
   store_client,
   store_tokenizer,
 } from "../stores"
@@ -24,18 +23,9 @@ import StateViz from "./StateViz.svelte"
 import TokenViz from "./TokenViz.svelte"
 
 export let data: NodeState_Infer
-let state: Uint8Array | null = null
-$: (async (seen_tokens) => {
-  // todo: decide when/how requests will be triggered
-  // maybe add a refresh button here?
-  // todo: add a refresh button
-  const client = await getClient()
-  const res = await client.inferFromZero(seen_tokens)
-  state = res.state
-})(data.seen_tokens)
 
 let tokens_set = false
-let tokens = new Uint32Array()
+let tokens: number[] = []
 
 onMount(async () => {
   const tok = await getTokenizer()
@@ -44,12 +34,11 @@ onMount(async () => {
 })
 
 function update(tok: TokenizerHandle | undefined) {
-  if (data.prompt == "") tokens = new Uint32Array()
+  if (data.prompt == "") tokens = []
   else {
     if (tok) {
       async function tokenize_go() {
-        tokens = await tok!.encode(data.prompt, true)
-        // state_nodes.save()
+        tokens = Array.from(await tok!.encode(data.prompt, true))
       }
 
       tokenize_go()
@@ -60,9 +49,13 @@ function update(tok: TokenizerHandle | undefined) {
 $: can_submit = $store_client && tokens.length != 0
 
 async function submit() {
+  const client = await getClient()
+  const allTokens = [...data.seen_tokens,...tokens];
+  await client.inferFromZero(allTokens)
+
   spawnToRight<Base_Result>(data, {
     type: "result",
-    seen_tokens: [...data.seen_tokens, ...tokens],
+    seen_tokens: allTokens,
     next: null,
   })
 }
@@ -70,7 +63,6 @@ async function submit() {
 
 <ExNode title="Batch Inference" data="{data}">
   <svelte:fragment slot="content">
-    <span>state <StateViz data="{state}" /></span>
     <label
       >prompt <textarea
         rows="6"

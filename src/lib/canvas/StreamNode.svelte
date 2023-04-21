@@ -21,21 +21,15 @@ let infinite = false
 let pending = 0
 let accumulated = ""
 
-async function nextToken(client: RWKVClient) {
-  const choices = preselect(data.logits, 1, 0.85)
+async function nextToken(client: RWKVClient, logits: Float32Array) {
+  const choices = preselect(logits, 1, 0.85)
   const token_id = random_choice(choices)
+  data.seen_tokens.push(token_id)
 
-  const t0 = async () => {
-    accumulated += await $store_tokenizer!.decode([token_id], true)
-  }
+  const text = await $store_tokenizer!.decode(data.seen_tokens, true)
+  accumulated = text
 
-  const t1 = async () => {
-    const res = await client.postInfer([token_id], data.state)
-    data.state = res.state
-    data.logits = res.logits
-  }
-
-  await Promise.all([t0(), t1()])
+  return await client.inferFromZero(data.seen_tokens)
 }
 
 let stop = false
@@ -46,11 +40,14 @@ onDestroy(() => {
 
 onMount(() => {
   async function go() {
+    const client = await getClient()
+    let logits = (await client.getCached(data.seen_tokens))?.logits
     while (!stop) {
-      const client = get(store_client)
-      if (client && (infinite || pending > 0)) {
+      if (logits && client && (infinite || pending > 0)) {
         if (pending > 0) pending--
-        await nextToken(client)
+        const res = await nextToken(client, logits)
+        logits = res.logits
+        state_nodes.save()
       } else {
         await new Promise((res) => requestAnimationFrame(res))
       }
@@ -62,11 +59,9 @@ onMount(() => {
 
 <ExNode title="Streaming Inference" data="{data}">
   <svelte:fragment slot="content">
-    <span>state {#if infinite}<span>-</span>{:else}<StateViz data="{data.state}" />{/if}</span>
     <span
-      >logits {#if infinite}<span>-</span>{:else}<LogitViz data="{data.logits}" />{/if}</span
+      >out <textarea rows="10" value="{accumulated}" disabled></textarea></span
     >
-    <span>out <textarea rows="10" value="{accumulated}" disabled></textarea></span>
   </svelte:fragment>
   <svelte:fragment slot="actions">
     <span class:text-hl="{pending != 0}">{pending}⧗</span>

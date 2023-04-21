@@ -51,7 +51,7 @@ import Dexie from "dexie"
 import { liveQuery } from "dexie"
 import type { ModelHash } from "./api"
 
-const db = new Dexie("myDatabase")
+const db = new Dexie("rwkvd")
 db.version(1).stores({
   infercache: "[model+tokens]",
 })
@@ -70,13 +70,15 @@ export async function add(row: InferCacheRow) {
   return await table.put(row)
 }
 
-import { assert } from "vitest"
+import { assert } from "chai"
 export async function getExact(
   model: InferCacheRow["model"],
   tokens: InferCacheRow["tokens"]
 ) {
   return await table.get([model, tokens])
 }
+
+import { isEqual } from "lodash"
 
 export async function getBestMatch(
   model: InferCacheRow["model"],
@@ -86,6 +88,13 @@ export async function getBestMatch(
   const record = await table
     .where(["model", "tokens"])
     .between([model, [tokens[0]]], [model, tokens], true, true)
-    .last()
+    .reverse()
+    .filter(doc => {
+      if (doc.tokens.length > tokens.length) {
+        return false
+      }
+      return isEqual(tokens.slice(0, doc.tokens.length), doc.tokens)
+    })
+    .first()
   return record
 }

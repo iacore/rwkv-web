@@ -1,4 +1,4 @@
-import { assert } from "vitest"
+import { assert } from "chai"
 
 export type TokenChoice = {
   /** token id */

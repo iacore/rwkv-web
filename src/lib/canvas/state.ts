@@ -37,22 +37,39 @@ export type Base_Stream = {
 export type NodeState_Stream = Base_Stream & BaseNodeState
 
 export type Base = Base_Infer | Base_Result | Base_Analysis | Base_Stream
-export type NodeState = NodeState_Infer | NodeState_Result | NodeState_Analysis | NodeState_Stream
+export type NodeState =
+  | NodeState_Infer
+  | NodeState_Result
+  | NodeState_Analysis
+  | NodeState_Stream
 
-
-export function spawn<T extends Base>(data: BaseNodeState, offset: {x: number, y: number}, extra: T /* todo: type this properly */) {
+export function spawn<T extends Base>(
+  data: BaseNodeState,
+  offset: { x: number; y: number },
+  extra: T /* todo: type this properly */
+) {
   state_nodes.update((o) => {
     o.items.push({
       x: data.x + offset.x,
       y: data.y + offset.y,
       stacking: data.stacking + 1,
       id: nanoid(),
-      ...extra
+      ...extra,
     })
     return o
   })
 }
 
-export function spawnToRight<T extends Base>(data: BaseNodeState, extra: T /* todo: type this properly */) {
+export function spawnToRight<T extends Base>(
+  data: BaseNodeState,
+  extra: T /* todo: type this properly */
+) {
   return spawn(data, { x: (data.el_width ?? 324) + 16, y: 0 }, extra)
+}
+
+export function spawnToDown<T extends Base>(
+  data: BaseNodeState,
+  extra: T /* todo: type this properly */
+) {
+  return spawn(data, { x: 0, y: (data.el_height ?? 128) + 16 }, extra)
 }

@@ -1,6 +1,6 @@
 import { encode as msgEncode, decode as msgDecode } from "@msgpack/msgpack"
 import * as cache from "./cache"
-import { assert } from "vitest"
+import { assert } from "chai"
 
 export type ModelHash = string
 
@@ -61,10 +61,16 @@ export class RWKVClient {
     }
   }
 
+  async getCached(tokens: Uint32List): Promise<cache.InferCacheRow | undefined> {
+    const model = this.info.model_hash
+    return await cache.getExact(model, Array.from(tokens))
+  }
+
   async inferFromZero(tokens_: Uint32List, noRequest = false): Promise<cache.InferCacheRow> {
     const model = this.info.model_hash
     const tokens = Array.from(tokens_)
-    const cached = await cache.getBestMatch(model, Array.from(tokens))
+    const cached = await cache.getBestMatch(model, tokens)
+    console.log(cached, model, tokens)
     if (cached != undefined) {
       // exact match
       if (cached.tokens.length == tokens.length) return cached

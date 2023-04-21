@@ -30,6 +30,9 @@ async function go() {
         const decoded = tokenizer.decode(ev.data[2], ev.data[3])
         self.postMessage([id, "decode_response", decoded])
         break
+      case "ping":
+        self.postMessage([id, "pong", ...ev.data.slice(2)])
+        break
       default:
         self.reportError(new UnhandledMessage(ev))
     }

@@ -1,12 +1,19 @@
 import { get, writable, type Readable, type Writable } from "svelte/store"
 import { nanoid } from "nanoid"
 import { debounce } from "lodash"
-import * as localForage from "localforage"
+import { createInstance as createLocalForage, INDEXEDDB } from "localforage"
 
 import type { RWKVClient } from "./api"
 import type { TokenizerHandle } from "./tokenizers/shim"
 import type { NodeState } from "./canvas/state"
 import { extraInit as extraInit_Infer } from "./canvas/BatchInferNode.svelte"
+
+const localForage = createLocalForage({
+  driver: INDEXEDDB,
+  name: "rwkvd-localforage",
+  version: 1,
+  storeName: "ui"
+})
 
 export const store_client: Writable<RWKVClient | undefined> = writable()
 export const store_tokenizer: Writable<TokenizerHandle | undefined> = writable()
@@ -75,12 +82,6 @@ export function storedSimple<T>(key: string, init: () => T): Resetable<T> {
   return content
 }
 
-localForage.config({
-  driver: localForage.INDEXEDDB,
-  name: "rwkvd",
-  version: 1,
-})
-
 export function storedComplex<T>(
   key: string,
   init: () => T,
@@ -121,7 +122,10 @@ export function storedComplex<T>(
   return content
 }
 
+import * as cache from "./cache"
+
 export function resetState() {
+  cache.reset()
   state_canvas.reset()
   state_nodes.reset()
 }

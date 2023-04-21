@@ -2,10 +2,24 @@
 import { getClient, state_nodes, store_tokenizer } from "../stores"
 import ExNode from "./ExNode.svelte"
 import LogitViz from "./LogitViz.svelte"
-import { spawn, spawnToRight, type NodeState_Result } from "./state"
+import { spawn, spawnToDown, spawnToRight, type NodeState_Result } from "./state"
 import StateViz from "./StateViz.svelte"
 
 export let data: NodeState_Result
+
+
+let state: Uint8Array | undefined = undefined
+let logits: Float32Array | undefined = undefined
+
+$: (async (seen_tokens) => {
+  const client = await getClient()
+  const res = await client.getCached(seen_tokens)
+  if (res != undefined) {
+    state = res.state
+    logits = res.logits
+  }
+})(data.seen_tokens)
+
 
 let word: string | null = null
 
@@ -32,11 +46,11 @@ function onInput(ev) {
 async function forceNext(next: number | null) {
   if (next == null) return
   const client = await getClient()
-  const { logits, state } = await client.postInfer([next], data.state)
+  const tokens = [...data.seen_tokens, next]
+  await client.inferFromZero(tokens)
   spawnToRight(data, {
     type: "result",
-    logits,
-    state,
+    seen_tokens: tokens,
     next: null,
   })
 }
@@ -44,15 +58,15 @@ async function forceNext(next: number | null) {
 
 <ExNode title="Infer Result" data="{data}">
   <svelte:fragment slot="content">
-    <span>state <StateViz data="{data.state}" /></span>
-    <span>logits <LogitViz data="{data.logits}" bind:value={data.next} /></span>
+    <span>state <StateViz data="{state}" /></span>
+    <span>logits <LogitViz data="{logits}" bind:value="{data.next}" /></span>
     <span
       >next <span class="flex gap-1">
         <input
           type="number"
           class="w-16"
           min="0"
-          max="{data.logits.length}"
+          max="{logits ? logits.length : 0}"
           value="{data.next}"
           on:input="{onInput}"
         />
@@ -69,16 +83,31 @@ async function forceNext(next: number | null) {
       type: "analysis",
       logits: data.logits,
     })}>Analysis</button> -->
-    <button class="btn-inline" on:click={() => forceNext(data.next)} disabled={data.next == null}><abbr title="Force next token">Force</abbr></button>
-    <button class="btn-inline" on:click={() => spawn(data, {x: 0, y: (data.el_height ?? 128) +16}, {
-      type: "infer",
-      state: data.state,
-      prompt: "",
-    })}>Batch▼</button>
-    <button class="btn-inline" on:click={() => spawnToRight(data, {
-      type: "stream",
-      logits: data.logits,
-      state: data.state,
-    })}>Stream▶</button>
+    <button
+      class="btn-inline"
+      on:click="{() =>
+        spawnToDown(
+          data,
+          {
+            type: 'infer',
+            seen_tokens: data.seen_tokens,
+            prompt: '',
+          }
+        )}">Batch▼</button
+    >
+    <button
+      class="btn-inline"
+      on:click="{() =>
+        spawnToDown(data, {
+          type: 'stream',
+          seen_tokens: data.seen_tokens,
+        })}">Stream▼</button
+    >
+    <button
+      class="btn-inline"
+      on:click="{() => forceNext(data.next)}"
+      disabled="{data.next == null}"
+      ><abbr title="Force next token">Force▶</abbr></button
+    >
   </svelte:fragment>
 </ExNode>
