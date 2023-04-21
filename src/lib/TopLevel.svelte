@@ -54,7 +54,7 @@ function newInfer() {
         max="1"
         bind:value="{$store_top_p}"
       /></label
-    ><button class="btn-inline" on:click="{resetState}">Reset</button><a
+    ><button class="btn-inline" on:click="{resetState}"><abbr title="Reset cache and UI">Reset</abbr></button><a
       class="btn-inline"
       title="View Source"
       href="https://github.com/iacore/rwkv-web"

@@ -11,6 +11,7 @@ pnpm dev
 
 ## Tips
 
+- Infer request is cached.
 - Click Refresh when the server is loaded with a different model.
 
 ## Notes
