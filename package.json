@@ -11,7 +11,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "publish-hackathon": "vite build && surge dist rwkv-web-01.surge.sh"
+    "publish": "vite build && surge dist rwkv-web-01.surge.sh"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.4",
