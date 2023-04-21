@@ -19,6 +19,7 @@
     "@types/chai": "^4.3.4",
     "autoprefixer": "^10.4.14",
     "fake-indexeddb": "^4.0.1",
+    "fast-check": "^3.8.1",
     "postcss": "^8.4.23",
     "svelte": "^3.58.0",
     "svelte-check": "^3.2.0",
@@ -32,7 +33,6 @@
   "dependencies": {
     "@msgpack/msgpack": "3.0.0-beta2",
     "@neodrag/svelte": "^2.0.3",
-    "chai": "^4.3.7",
     "dexie": "4.0.1-alpha.10",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",

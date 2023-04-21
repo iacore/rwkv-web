@@ -35,11 +35,11 @@ maybe it will be fast enough
 
 import { z } from "zod"
 
-const schema = z.object({
+export const schema = z.object({
   model: z.string(), // model hash
   tokens: z
-    .instanceof(Uint32Array)
-    .and(z.custom((data: Uint32Array) => data.length > 0)),
+    .array(z.number())
+    .and(z.custom((data: ArrayLike<any>) => data.length > 0)),
   state: z.instanceof(Uint8Array),
   logits: z.instanceof(Float32Array),
   date: z.date(),
@@ -55,24 +55,37 @@ const db = new Dexie("myDatabase")
 db.version(1).stores({
   infercache: "[model+tokens]",
 })
-const table = db.table<InferCacheRow, [ModelHash, Uint32Array]>("infercache")
+const table = db.table<
+  InferCacheRow,
+  [InferCacheRow["model"], InferCacheRow["tokens"]]
+>("infercache")
+
+export async function reset() {
+  await db.delete()
+  await db.open()
+}
 
 export async function add(row: InferCacheRow) {
   row = schema.parse(row)
   return await table.put(row)
 }
 
-import { assert } from "chai"
-export async function getExact(model: ModelHash, tokens: Uint32Array) {
+import { assert } from "vitest"
+export async function getExact(
+  model: InferCacheRow["model"],
+  tokens: InferCacheRow["tokens"]
+) {
   return await table.get([model, tokens])
 }
 
-export async function getBestMatch(model: ModelHash, tokens: Uint32Array) {
+export async function getBestMatch(
+  model: InferCacheRow["model"],
+  tokens: InferCacheRow["tokens"]
+) {
   assert(tokens.length > 0)
   const record = await table
     .where(["model", "tokens"])
-    .between([model, new Uint32Array([tokens[0]])], [model, tokens], true, true)
-    .reverse()
-    .first()
+    .between([model, [tokens[0]]], [model, tokens], true, true)
+    .last()
   return record
 }
