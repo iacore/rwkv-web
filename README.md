@@ -65,3 +65,7 @@ good to have
 - scroll wheel scroll canvas
 - dynamic canvas background
 - faster sampler
+- better touch support
+
+- improve code
+  - Subclass of ExNode depend on state_nodes not changing identity (Javascript object are kept by reference). Change that.

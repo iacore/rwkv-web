@@ -10,7 +10,6 @@ import { inspect } from "./util"
 import StreamNode from "./canvas/StreamNode.svelte"
 
 let elCanvas
-let elNodes
 function onDrag(detail) {
   state_canvas.update((o) => ({
     ...o,
@@ -22,16 +21,14 @@ function onDrag(detail) {
 
 <div class="canvas isolate" bind:this="{elCanvas}">
   <div
-    class="nodes relative"
-    bind:this="{elNodes}"
+    class="nodes relative pointer-events-none"
     use:draggable="{{
       position: $state_canvas,
       handle: elCanvas,
-      cancel: elNodes,
       onDrag,
     }}"
   >
-    {#each $state_nodes.items as node}
+    {#each $state_nodes.items as node (node.id)}
       {#if node.type == "infer"}
         <BatchInferNode data="{node}" />
       {:else if node.type == "result"}

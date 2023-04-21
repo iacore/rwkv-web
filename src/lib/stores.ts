@@ -25,7 +25,7 @@ export const getTokenizer = () => {
 }
 
 // networking-related
-export const store_client: Writable<RWKVClient | undefined> = writable()
+export const store_client = writable<RWKVClient | undefined>()
 export const getClient = createStoreGetter(store_client)
 
 // global params
@@ -34,9 +34,6 @@ export const store_top_p = storedSimple("params.top_p", () => 0.85)
 
 // ui state
 export const state_canvas = storedSimple("ui.canvas", () => ({ x: 0, y: 0 }))
-export type UiState_Nodes = {
-  items: NodeState[]
-}
 export const state_nodes = storedComplex(
   "ui.nodes",
   (): UiState_Nodes => ({
