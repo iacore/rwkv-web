@@ -58,15 +58,8 @@
 
 @layer utilities {
   .animate-flicker {
-    animation: flicker 2s step-end infinite;
-  }
-}
-
-@keyframes flicker {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.4;
+    /* --flicker: 0 = dark */
+    /* --flicker: 1 = bright */
+    opacity: calc(var(--flicker) * 0.4 + 0.6)
   }
 }

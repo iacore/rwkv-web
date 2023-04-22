@@ -51,7 +51,7 @@ def infer_from_zero : ModelWeights S -> List Token -> HiddenState S
 
 ## TODO
 
-- add loading animation. spawn popup when waiting for server response
+- add loading indicator. when waiting for server response (inferFromZero)
   should be at rightmost of top/status bar
 - add saving animation ("stop inference to save")
 - add "retry request" button for all windows

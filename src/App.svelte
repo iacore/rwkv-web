@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from "svelte"
+import { onDestroy, onMount } from "svelte"
 import { get, writable } from "svelte/store"
 import { RWKVClient } from "./lib/api"
 import Canvas from "./lib/Canvas.svelte"
@@ -8,7 +8,7 @@ import ModelInfo from "./lib/ModelInfo.svelte"
 import { store_client, getTokenizer } from "./lib/stores"
 import { load as loadTokenizer } from "./lib/tokenizers/shim"
 import TopLevel from "./lib/TopLevel.svelte"
-import { inspect, type PromiseState, promiseToStore } from "./lib/util"
+import { inspect, type PromiseState, promiseToStore, timeout } from "./lib/util"
 
 let server = "http://localhost:5000"
 
@@ -51,15 +51,34 @@ $: {
 
 let elErrorDisplayInner: HTMLElement
 let elErrorDisplayHeight = 0
+
+let stop = false
+let destroy_cbs: (() => void)[] = []
+let flickerProgress = 1
 onMount(() => {
   const ob = new ResizeObserver(() => {
     elErrorDisplayHeight = elErrorDisplayInner.clientHeight
   })
   ob.observe(elErrorDisplayInner)
+  destroy_cbs.push(() => ob.disconnect())
+  ;(async () => {
+    while (!stop) {
+      await timeout(1000)
+      flickerProgress = 0
+      await timeout(1000)
+      flickerProgress = 1
+    }
+  })()
+})
+onDestroy(() => {
+  stop = true
+  for (const cb of destroy_cbs) {
+    cb()
+  }
 })
 </script>
 
-<div id="app-root">
+<div id="app-root" style="--flicker:{flickerProgress};">
   <header>
     <div class="site-icon">RWKV<small class="text-[.5em] -ml-1">Δ</small></div>
     <div class="global-controls flex flex-wrap gap-x-2">
@@ -133,6 +152,6 @@ header {
 
 .error-display {
   overflow: hidden;
-  transition: height .3s ease-out .5s;
+  transition: height 0.3s ease-out 0.5s;
 }
 </style>

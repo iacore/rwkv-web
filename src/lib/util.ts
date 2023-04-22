@@ -47,3 +47,7 @@ export function inspect(a: any): string {
     return a.toString()
   }
 }
+
+export function timeout(ms: number) {
+  return new Promise(res => setTimeout(res, ms))
+}
