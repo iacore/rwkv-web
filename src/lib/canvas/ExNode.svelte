@@ -78,7 +78,7 @@ function close() {
 }
 .content {
   display: grid;
-  grid-auto-columns: auto 256px;
+  grid-auto-columns: auto 1fr;
 }
 :global(.content > *) {
   display: grid;

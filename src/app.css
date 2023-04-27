@@ -37,6 +37,10 @@
   code {
     @apply font-mono;
   }
+
+  textarea {
+    resize: both;
+  }
 }
 
 @layer components {
@@ -60,6 +64,6 @@
   .animate-flicker {
     /* --flicker: 0 = dark */
     /* --flicker: 1 = bright */
-    opacity: calc(var(--flicker) * 0.4 + 0.6)
+    opacity: calc(var(--flicker) * 0.4 + 0.6);
   }
 }
